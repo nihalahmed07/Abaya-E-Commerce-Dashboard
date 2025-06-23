@@ -1,0 +1,241 @@
+<!--breadcrumb-->
+<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+	<div class="breadcrumb-title pe-3">ng-Components</div>
+	<div class="ps-3">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb mb-0 p-0">
+				<li class="breadcrumb-item"><a href="#" (click)="$event.preventDefault()"><i class="bx bx-home-alt"></i></a>
+				</li>
+				<li class="breadcrumb-item active" aria-current="page">Tooltips</li>
+			</ol>
+		</nav>
+	</div>
+	<div class="ms-auto">
+		<div class="btn-group" ngbDropdown>
+			<button type="button" class="btn btn-primary">Settings</button>
+			<button type="button" class="btn btn-primary split-bg-primary dropdown-toggle dropdown-toggle-split" id="dropdownBasic1" ngbDropdownToggle>	<span class="visually-hidden">Toggle Dropdown</span>
+			</button>
+			<div ngbDropdownMenu aria-labelledby="dropdownBasic1" class="dropdown-menu-right dropdown-menu-lg-end">
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Action</a>
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Another action</a>
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Something else here</a>
+				<div class="dropdown-divider"></div>
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Separated link</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!--end breadcrumb-->
+
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Quick and easy tooltips</h4>
+		</div>
+		<hr>
+		<button type="button" class="btn btn-outline-secondary me-2" placement="top" ngbTooltip="Tooltip on top">
+			Tooltip on top
+		  </button>
+		  <button type="button" class="btn btn-outline-secondary me-2" placement="end" ngbTooltip="Tooltip on right">
+			Tooltip on right
+		  </button>
+		  <button type="button" class="btn btn-outline-secondary me-2" placement="bottom" ngbTooltip="Tooltip on bottom">
+			Tooltip on bottom
+		  </button>
+		  <button type="button" class="btn btn-outline-secondary me-2" placement="start" ngbTooltip="Tooltip on left">
+			Tooltip on left
+		  </button>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">HTML and bindings in tooltips</h4>
+		</div>
+		<hr>
+		<p>
+			Tooltips can contain any arbitrary HTML, Angular bindings and even directives!
+			Simply enclose desired content in a <code>&lt;ng-template&gt;</code> element.
+		  </p>
+		  
+		  <ng-template #tipContent>Hello, <b>{{name}}</b>!</ng-template>
+		  <button type="button" class="btn btn-outline-secondary" [ngbTooltip]="tipContent">
+			I've got markup and bindings in my tooltip!
+		  </button>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Custom and manual triggers</h4>
+		</div>
+		<hr>
+		<p>
+			You can easily override open and close triggers by specifying event names (separated by <code>:</code>) in the <code>triggers</code> property.
+		  </p>
+		  
+		  <button type="button" class="btn btn-outline-secondary" ngbTooltip="You see, I show up on click!" triggers="click:blur">
+			Click me!
+		  </button>
+		  
+		  <hr>
+		  <p>
+			Alternatively you can take full manual control over tooltip opening / closing events.
+		  </p>
+		  
+		  <button type="button" class="btn btn-outline-secondary me-2" ngbTooltip="What a great tip!" [autoClose]="false" triggers="manual" #t="ngbTooltip" (click)="t.open()">
+			Click me to open a tooltip
+		  </button>
+		  <button type="button" class="btn btn-outline-secondary me-2" (click)="t.close()">
+			Click me to close a tooltip
+		  </button>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Automatic closing with keyboard and mouse</h4>
+		</div>
+		<hr>
+		<p>As for some other popup-based widgets, you can set the tooltip to close automatically upon some events.</p>
+		<p>In the following examples, they will all close on <code>Escape</code> as well as:</p>
+
+		<ul>
+			<li class="mb-2">
+				click inside:
+				<button
+				type="button" class="btn btn-outline-secondary"
+				triggers="click" [autoClose]="'inside'" ngbTooltip="Click inside or press Escape to close"
+				>
+					Click to toggle
+				</button>
+			</li>
+
+			<li class="mb-2">
+				click outside:
+				<button
+				type="button" class="btn btn-outline-secondary"
+				triggers="click" [autoClose]="'outside'" ngbTooltip="Click outside or press Escape to close"
+				>
+				Click to toggle
+				</button>
+			</li>
+
+			<li class="mb-2">
+				all clicks:
+				<button
+					type="button" class="btn btn-outline-secondary"
+					triggers="click" [autoClose]="true" ngbTooltip="Click anywhere or press Escape to close (try the toggling element too)"
+					#tooltip3="ngbTooltip"
+				>
+				Click to toggle
+				</button>
+
+				&nbsp;
+
+				<button type="button" class="btn btn-outline-secondary me-2" (click)="tooltip3.toggle()">
+					Click to toggle the external tooltip
+				</button>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Context and manual triggers</h4>
+		</div>
+		<hr>
+		<p>
+			You can optionally pass in a context when manually triggering a tooltip.
+		  </p>
+		  
+		  <ng-template #tipContent let-greeting="greeting">{{greeting}}, <b>{{name}}</b>!</ng-template>
+		  <button
+			type="button" class="btn btn-outline-secondary me-2"
+			[ngbTooltip]="tipContent"
+			triggers="manual" #t1="ngbTooltip" (click)="toggleWithGreeting(t1, 'Bonjour')"
+		  >
+			French
+		  </button>
+		  <button
+			type="button" class="btn btn-outline-secondary me-2"
+			[ngbTooltip]="tipContent"
+			triggers="manual" #t2="ngbTooltip" (click)="toggleWithGreeting(t2, 'Gutentag')"
+		  >
+			German
+		  </button>
+		  <button
+			type="button" class="btn btn-outline-secondary me-2"
+			[ngbTooltip]="tipContent"
+			triggers="manual" #t3="ngbTooltip" (click)="toggleWithGreeting(t3, 'Hello')"
+		  >
+			English
+		  </button>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Open and close delays</h4>
+		</div>
+		<hr>
+		<p>
+			When using non-manual triggers, you can control the delay to open and close the tooltip through the <code>openDelay</code> and
+			<code>closeDelay</code> properties. Note that the <code>autoClose</code> feature does not use the close delay, it closes the tooltip immediately.
+		  </p>
+		  
+		  <button type="button" class="btn btn-outline-secondary me-2"
+			ngbTooltip="You see, I show up after 300ms and disappear after 500ms!"
+			[openDelay]="300" [closeDelay]="500">
+			Hover 300ms here
+		  </button>
+		  <button type="button" class="btn btn-outline-secondary me-2"
+			ngbTooltip="You see, I show up after 1s and disappear after 2s!"
+			[openDelay]="1000" [closeDelay]="2000">
+			Hover 1s here
+		  </button>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Append tooltip in the body</h4>
+		</div>
+		<hr>
+		<p>
+			Set the <code>container</code> property to "body" to have the tooltip be appended to the body instead of the triggering element's parent. This option is useful if the element triggering the tooltip is inside an element that clips its contents (i.e. <code>overflow: hidden</code>).
+		</p>
+		
+		<div class="row">
+			<div class="col-auto">
+				<div class="card px-1 py-5">
+					<button type="button" class="btn btn-outline-secondary mb-2" placement="top"
+									ngbTooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
+						Default tooltip
+					</button>
+					<button type="button" class="btn btn-outline-secondary" placement="bottom"
+									ngbTooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." container="body">
+						Tooltip appended to body
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Tooltip with custom class</h4>
+		</div>
+		<hr>
+		<p>
+			You can optionally pass in a custom class via <code>tooltipClass</code>
+		  </p>
+		  
+		  <button type="button" class="btn btn-outline-secondary" ngbTooltip="Nice class!"
+			tooltipClass="my-custom-class">
+			Tooltip with custom class
+		  </button>
+	</div>
+</div>

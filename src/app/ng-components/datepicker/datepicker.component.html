@@ -1,0 +1,210 @@
+<!--breadcrumb-->
+<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+	<div class="breadcrumb-title pe-3">ng-Components</div>
+	<div class="ps-3">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb mb-0 p-0">
+				<li class="breadcrumb-item"><a href="#" (click)="$event.preventDefault()"><i class="bx bx-home-alt"></i></a>
+				</li>
+				<li class="breadcrumb-item active" aria-current="page">Datepicker</li>
+			</ol>
+		</nav>
+	</div>
+	<div class="ms-auto">
+		<div class="btn-group" ngbDropdown>
+			<button type="button" class="btn btn-primary">Settings</button>
+			<button type="button" class="btn btn-primary split-bg-primary dropdown-toggle dropdown-toggle-split" id="dropdownBasic1" ngbDropdownToggle>	<span class="visually-hidden">Toggle Dropdown</span>
+			</button>
+			<div ngbDropdownMenu aria-labelledby="dropdownBasic1" class="dropdown-menu-right dropdown-menu-lg-end">
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Action</a>
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Another action</a>
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Something else here</a>
+				<div class="dropdown-divider"></div>
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Separated link</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!--end breadcrumb-->
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Basic datepicker</h4>
+		</div>
+		<hr>
+		<p>Simple datepicker</p>
+		<ngb-datepicker #dp [(ngModel)]="model" (navigate)="date = $event.next"></ngb-datepicker>
+		<hr/>
+		<button class="btn btn-sm btn-outline-primary mr-2" (click)="selectToday()">Select Today</button>
+		<button class="btn btn-sm btn-outline-primary mr-2" (click)="dp.navigateTo()">To current month</button>
+		<button class="btn btn-sm btn-outline-primary mr-2" (click)="dp.navigateTo({year: 2013, month: 2})">To Feb 2013</button>
+		<hr/> <pre>Month: {{ date.month }}.{{ date.year }}</pre>
+		<pre>Model: {{ model | json }}</pre>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Datepicker in a popup</h4>
+		</div>
+		<hr>
+		<form class="row row-cols-sm-auto">
+			<div class="col-12">
+			  <div class="input-group">
+				<input class="form-control" placeholder="yyyy-mm-dd"
+					   name="dp" [(ngModel)]="model" ngbDatepicker #d="ngbDatepicker">
+				<button class="btn btn-outline-secondary bx bx-calendar-check" (click)="d.toggle()" type="button"></button>
+			  </div>
+			</div>
+		  </form>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body table-responsive">
+		<div class="card-title">
+			<h4 class="mb-0">Multiple months</h4>
+		</div>
+		<hr>
+		<ngb-datepicker [displayMonths]="displayMonths" [navigation]="navigation" [showWeekNumbers]="showWeekNumbers" [outsideDays]="outsideDays"></ngb-datepicker>
+		<hr/>
+		<form class="form-inline">
+			<div class="form-group">
+				<div class="input-group">
+					<input class="form-control" placeholder="yyyy-mm-dd" name="dp" [displayMonths]="displayMonths" [navigation]="navigation" [outsideDays]="outsideDays" [showWeekNumbers]="showWeekNumbers" ngbDatepicker #d1="ngbDatepicker">
+					<div class="input-group-append">
+						<button class="btn btn-outline-secondary bx bx-calendar-check" (click)="d1.toggle()" type="button"></button>
+					</div>
+				</div>
+			</div>
+		</form>
+		<hr/>
+		<div class="d-flex flex-wrap align-content-between p-2">
+			<select class="custom-select" [(ngModel)]="displayMonths">
+			  <option [ngValue]="1">One month</option>
+			  <option [ngValue]="2">Two months</option>
+			  <option [ngValue]="3">Three months</option>
+			</select>
+		  
+			<select class="custom-select" [(ngModel)]="navigation">
+			  <option value="none">Without navigation</option>
+			  <option value="select">With select boxes</option>
+			  <option value="arrows">Without select boxes</option>
+			</select>
+		  
+			<select class="custom-select" [(ngModel)]="showWeekNumbers">
+			  <option [ngValue]="true">Week numbers</option>
+			  <option [ngValue]="false">No week numbers</option>
+			</select>
+		  
+			<select class="custom-select" [(ngModel)]="outsideDays">
+			  <option value="visible">Visible outside days</option>
+			  <option value="hidden">Hidden outside days</option>
+			  <option value="collapsed">Collapsed outside days</option>
+			</select>
+		  </div>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body table-responsive">
+		<div class="card-title">
+			<h4 class="mb-0">Range selection</h4>
+		</div>
+		<hr>
+		<p>Example of the range selection</p>
+		<ngb-datepicker #dp (dateSelect)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t" outsideDays="hidden"></ngb-datepicker>
+		<ng-template #t let-date let-focused="focused"> <span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)" [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+            {{ date.day }}
+          </span>
+		</ng-template>
+		<hr> <pre>From: {{ fromDate | json }} </pre>
+		<pre>To: {{ toDate | json }} </pre>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Range selection in a popup</h4>
+		</div>
+		<hr>
+		<form class="form-inline">
+			<div class="form-group hidden">
+				<div class="input-group">
+					<input name="datepicker" class="form-control" ngbDatepicker #datepicker="ngbDatepicker" [autoClose]="'outside'" (dateSelect)="onDateSelection2($event)" [displayMonths]="2" [dayTemplate]="t2" outsideDays="hidden" [startDate]="fromDate!" tabindex="-1">
+					<ng-template #t2 let-date let-focused="focused"> <span class="custom-day" [class.focused]="focused" [class.range]="isRange2(date)" [class.faded]="isHovered2(date) || isInside2(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+                    {{ date.day }}
+                  </span>
+					</ng-template>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="input-group">
+					<input #dpFromDate class="form-control" placeholder="yyyy-mm-dd" name="dpFromDate" [value]="formatter.format(fromDate)" (input)="fromDate = validateInput(fromDate, dpFromDate.value)">
+					<div class="input-group-append">
+						<button class="btn btn-outline-secondary calendar" (click)="datepicker.toggle()" type="button"></button>
+					</div>
+				</div>
+			</div>
+			<div class="form-group ml-2">
+				<div class="input-group">
+					<input #dpToDate class="form-control" placeholder="yyyy-mm-dd" name="dpToDate" [value]="formatter.format(toDate)" (input)="toDate = validateInput(toDate, dpToDate.value)">
+					<div class="input-group-append">
+						<button class="btn btn-outline-secondary calendar" (click)="datepicker.toggle()" type="button"></button>
+					</div>
+				</div>
+			</div>
+		</form>
+		<hr/> <pre>From date model: {{ fromDate | json }}</pre>
+		<pre>To date model: {{ toDate | json }}</pre>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Range selection</h4>
+		</div>
+		<hr>
+		<p>Disabled datepicker</p>
+		<ngb-datepicker [(ngModel)]="model" [disabled]="disabled"></ngb-datepicker>
+		<hr/>
+		<button class="btn btn-sm btn-outline-{{disabled ? 'danger' : 'success'}}" (click)="disabled = !disabled">{{ disabled ? "disabled" : "enabled"}}</button>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body table-responsive">
+		<div class="card-title">
+			<h4 class="mb-0">Custom date adapter and formatter</h4>
+		</div>
+		<hr>
+		<p>These datepickers use custom date adapter and formatter. The custom <code>NgbDateAdapter</code> 
+			<br>lets you use your own model i.e. the structure of ngModel. 
+			<br>The custom <code>NgbDateParserFormatter</code> lets you use your own formatter or parser i.e. the date format in input field.
+			<br/>
+			<br/>Notice that there are <strong>two</strong> different services: the <code>NgbDateAdapter</code> and the <code>NgbDateParserFormatter</code>.</p>
+		<br/>
+		<div class="row">
+			<div class="col">
+				<ngb-datepicker #d1 [(ngModel)]="model1" #c1="ngModel"></ngb-datepicker>
+				<hr/>
+				<button class="btn btn-sm btn-outline-primary" (click)="model1 = today">Select Today</button>
+				<hr/> <pre>Model: {{ model1 | json }}</pre>
+				<pre>State: {{ c1.status }}</pre>
+			</div>
+			<div class="col">
+				<form class="form-inline">
+					<div class="form-group">
+						<div class="input-group">
+							<input class="form-control" placeholder="dd/mm/yyyy" name="d2" #c2="ngModel" [(ngModel)]="model2" ngbDatepicker #d2="ngbDatepicker">
+							<div class="input-group-append">
+								<button class="btn btn-outline-secondary calendar" (click)="d2.toggle()" type="button"></button>
+							</div>
+						</div>
+					</div>
+				</form>
+				<hr/>
+				<button class="btn btn-sm btn-outline-primary" (click)="model2 = today">Select Today</button>
+				<hr/> <pre>Model: {{ model2 | json }}</pre>
+				<pre>State: {{ c2.status }}</pre>
+			</div>
+		</div>
+	</div>
+</div>

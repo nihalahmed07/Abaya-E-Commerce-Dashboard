@@ -1,0 +1,59 @@
+<!--breadcrumb-->
+<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+	<div class="breadcrumb-title pe-3">ng-Components</div>
+	<div class="ps-3">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb mb-0 p-0">
+				<li class="breadcrumb-item"><a href="#" (click)="$event.preventDefault()"><i class="bx bx-home-alt"></i></a>
+				</li>
+				<li class="breadcrumb-item active" aria-current="page">Table</li>
+			</ol>
+		</nav>
+	</div>
+	<div class="ms-auto">
+		<div class="btn-group" ngbDropdown>
+			<button type="button" class="btn btn-primary">Settings</button>
+			<button type="button" class="btn btn-primary split-bg-primary dropdown-toggle dropdown-toggle-split" id="dropdownBasic1" ngbDropdownToggle>	<span class="visually-hidden">Toggle Dropdown</span>
+			</button>
+			<div ngbDropdownMenu aria-labelledby="dropdownBasic1" class="dropdown-menu-right dropdown-menu-lg-end">
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Action</a>
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Another action</a>
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Something else here</a>
+				<div class="dropdown-divider"></div>
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Separated link</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!--end breadcrumb-->
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Contextual progress bars</h4>
+		</div>
+		<hr>
+		<p>Table is just a mapping of objects to table rows with <code>ngFor</code></p>
+
+		<table class="table table-striped">
+			<thead>
+			<tr>
+				<th scope="col">#</th>
+				<th scope="col">Country</th>
+				<th scope="col">Area</th>
+				<th scope="col">Population</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr *ngFor="let country of countries; index as i">
+				<th scope="row">{{ i + 1 }}</th>
+				<td>
+				<img [src]="'https://upload.wikimedia.org/wikipedia/commons/' + country.flag" class="me-2" style="width: 20px">
+				{{ country.name }}
+				</td>
+				<td>{{ country.area | number }}</td>
+				<td>{{ country.population | number }}</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

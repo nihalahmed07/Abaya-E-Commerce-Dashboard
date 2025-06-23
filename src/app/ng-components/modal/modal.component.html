@@ -1,0 +1,119 @@
+<!--breadcrumb-->
+<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+	<div class="breadcrumb-title pe-3">ng-Components</div>
+	<div class="ps-3">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb mb-0 p-0">
+				<li class="breadcrumb-item"><a href="#" (click)="$event.preventDefault()"><i class="bx bx-home-alt"></i></a>
+				</li>
+				<li class="breadcrumb-item active" aria-current="page">Modal</li>
+			</ol>
+		</nav>
+	</div>
+	<div class="ms-auto">
+		<div class="btn-group" ngbDropdown>
+			<button type="button" class="btn btn-primary">Settings</button>
+			<button type="button" class="btn btn-primary split-bg-primary dropdown-toggle dropdown-toggle-split" id="dropdownBasic1" ngbDropdownToggle>	<span class="visually-hidden">Toggle Dropdown</span>
+			</button>
+			<div ngbDropdownMenu aria-labelledby="dropdownBasic1" class="dropdown-menu-right dropdown-menu-lg-end">
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Action</a>
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Another action</a>
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Something else here</a>
+				<div class="dropdown-divider"></div>
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Separated link</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!--end breadcrumb-->
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Modal with default options</h4>
+		</div>
+		<hr>
+		<ng-template #content let-modal>
+			<div class="modal-header">
+			  <h4 class="modal-title" id="modal-basic-title">Profile update</h4>
+			  <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+			</div>
+			<div class="modal-body">
+			  <form>
+				<div class="mb-3">
+				  <label for="dateOfBirth">Date of birth</label>
+				  <div class="input-group">
+					<input id="dateOfBirth" class="form-control" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker #dp="ngbDatepicker">
+					<button class="btn btn-outline-secondary calendar" (click)="dp.toggle()" type="button"></button>
+				  </div>
+				</div>
+			  </form>
+			</div>
+			<div class="modal-footer">
+			  <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
+			</div>
+		  </ng-template>
+		  
+		  <button class="btn btn-lg btn-outline-primary" (click)="open(content)">Launch demo modal</button>
+		  
+		  <hr>
+		  
+		  <pre>{{ closeResult }}</pre>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Components as content</h4>
+		</div>
+		<hr>
+		<p>You can pass an existing component as content of the modal window. In this case, if you're still using Angular 8 or older, remember to add the content component
+			in the <code>entryComponents</code> section of your <code>NgModule</code>. For Angular 9 or newer, it's not needed anymore.
+			</p>
+			
+			<button class="btn btn-lg btn-outline-primary" (click)="open2()">Launch demo modal</button>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Focus management</h4>
+		</div>
+		<hr>
+		<p>First focusable element within the modal window will receive focus upon opening.
+			This could be configured to focus any other element by adding an <code>ngbAutofocus</code> attribute on it.</p>
+			
+			<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span> <span class="token attr-name">ngbAutofocus</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>btn btn-danger<span class="token punctuation">"</span></span>
+				  <span class="token attr-name">(click)</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>modal.close(<span class="token punctuation">'</span>Ok click<span class="token punctuation">'</span>)<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Ok<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">&gt;</span></span></code></pre>
+			
+			<br />
+			<button class="btn btn-outline-primary me-2" (click)="open3('focusFirst')">
+			  <div>Open confirm modal</div>
+			  <div class="text-dark" aria-hidden="true"><small>&times; button will be focused</small></div>
+			</button>
+			
+			<button class="btn btn-outline-primary" (click)="open3('autofocus')">
+			  <div>Open confirm modal with `ngbAutofocus`</div>
+			  <div class="text-dark" aria-hidden="true"><small>Ok button will be focused</small></div>
+			</button>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Modal with options</h4>
+		</div>
+		<hr>
+		<ngbd-modal-options></ngbd-modal-options>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Stacked modals</h4>
+		</div>
+		<hr>
+		<button class="btn btn-lg btn-outline-primary" (click)="open4()">Launch demo modal</button>
+		<hr/>
+		<p>Number of modals: {{modalsNumber}}</p>
+	</div>
+</div>

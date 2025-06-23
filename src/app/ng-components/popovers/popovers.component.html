@@ -1,0 +1,249 @@
+<!--breadcrumb-->
+<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+	<div class="breadcrumb-title pe-3">ng-Components</div>
+	<div class="ps-3">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb mb-0 p-0">
+				<li class="breadcrumb-item"><a href="#" (click)="$event.preventDefault()"><i class="bx bx-home-alt"></i></a>
+				</li>
+				<li class="breadcrumb-item active" aria-current="page">Popovers</li>
+			</ol>
+		</nav>
+	</div>
+	<div class="ms-auto">
+		<div class="btn-group" ngbDropdown>
+			<button type="button" class="btn btn-primary">Settings</button>
+			<button type="button" class="btn btn-primary split-bg-primary dropdown-toggle dropdown-toggle-split" id="dropdownBasic1" ngbDropdownToggle>	<span class="visually-hidden">Toggle Dropdown</span>
+			</button>
+			<div ngbDropdownMenu aria-labelledby="dropdownBasic1" class="dropdown-menu-right dropdown-menu-lg-end">
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Action</a>
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Another action</a>
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Something else here</a>
+				<div class="dropdown-divider"></div>
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Separated link</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!--end breadcrumb-->
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Basic popovers</h4>
+		</div>
+		<hr/>
+		<button type="button" class="btn btn-outline-secondary me-2" placement="top"
+        ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." popoverTitle="Popover on top">
+		Popover on top
+		</button>
+
+		<button type="button" class="btn btn-outline-secondary me-2" placement="end"
+				ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." popoverTitle="Popover on right">
+		Popover on right
+		</button>
+
+		<button type="button" class="btn btn-outline-secondary me-2" placement="bottom"
+				ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." popoverTitle="Popover on bottom">
+		Popover on bottom
+		</button>
+
+		<button type="button" class="btn btn-outline-secondary me-2" placement="start"
+				ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." popoverTitle="Popover on left">
+		Popover on left
+		</button>
+	</div>
+</div>
+
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">HTML and bindings in popovers</h4>
+		</div>
+		<hr/>	
+		<p>
+			Popovers can contain any arbitrary HTML, Angular bindings and even directives!
+			Simply enclose desired content or title in a <code>&lt;ng-template&gt;</code> element.
+		  </p>
+		  
+		  <ng-template #popContent>Hello, <b>{{name}}</b>!</ng-template>
+		  <ng-template #popTitle>Fancy <b>content!!</b></ng-template>
+		  <button type="button" class="btn btn-outline-secondary" [ngbPopover]="popContent" [popoverTitle]="popTitle">
+			I've got markup and bindings in my popover!
+		  </button>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0"> Custom and manual triggers</h4>
+		</div>
+		<hr/>
+			<p>
+				You can easily override open and close triggers by specifying event names (separated by <code>:</code>) in the <code>triggers</code> property. You may pass multiple triggers; separate them with a space.
+			</p>
+			
+			<button type="button" class="btn btn-outline-secondary" ngbPopover="You see, I show up on hover!" triggers="mouseenter:mouseleave" popoverTitle="Pop title">
+				Hover over me!
+			</button>
+			
+			<hr>
+			<p>
+				Alternatively you can take full manual control over popover opening / closing events.
+			</p>
+			
+			<button type="button" class="btn btn-outline-secondary me-2" ngbPopover="What a great tip!" [autoClose]="false" triggers="manual" #p="ngbPopover" (click)="p.open()" popoverTitle="Pop title">
+				Click me to open a popover
+			</button>
+			<button type="button" class="btn btn-outline-secondary me-2" (click)="p.close()">
+				Click me to close a popover
+		  </button>
+		</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Automatic closing with keyboard and mouse</h4>
+		</div>
+		<hr/> 
+		
+		<p>As for some other popup-based widgets, you can set the popover to close automatically upon some events.</p>
+		<p>In the following examples, they will all close on <code>Escape</code> as well as:</p>
+
+		<ul>
+		<li class="mb-2">
+			click inside:
+			<button
+			type="button" class="btn btn-outline-secondary" popoverTitle="Pop title"
+			[autoClose]="'inside'" ngbPopover="Click inside or press Escape to close"
+			>
+				Click to toggle
+			</button>
+		</li>
+
+		<li class="mb-2">
+			click outside:
+			<button
+			type="button" class="btn btn-outline-secondary" popoverTitle="Pop title"
+			[autoClose]="'outside'" ngbPopover="Click outside or press Escape to close"
+			>
+			Click to toggle
+			</button>
+		</li>
+
+		<li class="mb-2">
+			all clicks:
+			<button
+				type="button" class="btn btn-outline-secondary" popoverTitle="Pop title"
+				[autoClose]="true" ngbPopover="Click anywhere or press Escape to close (try the toggling element too)"
+				#popover3="ngbPopover"
+			>
+				Click to toggle
+			</button>
+			&nbsp;
+			<button type="button" class="btn btn-outline-secondary me-2" (click)="popover3.toggle()">
+				Click to toggle the external popover
+			</button>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Context and manual triggers</h4>
+		</div>
+		<hr/>
+		<p>
+			You can optionally pass in a context when manually triggering a popover.
+		  </p>
+		  
+		  <ng-template #popContent let-greeting="greeting">{{greeting}}, <b>{{name}}</b>!</ng-template>
+		  <ng-template #popTitle let-language="language">Greeting in {{language}}</ng-template>
+		  <button
+			type="button" class="btn btn-outline-secondary me-2"
+			[ngbPopover]="popContent" [popoverTitle]="popTitle"
+			triggers="manual" #p1="ngbPopover" (click)="toggleWithGreeting(p1, 'Bonjour', 'French')"
+		  >
+			French
+		  </button>
+		  <button
+			type="button" class="btn btn-outline-secondary me-2"
+			[ngbPopover]="popContent" [popoverTitle]="popTitle"
+			triggers="manual" #p2="ngbPopover" (click)="toggleWithGreeting(p2, 'Gutentag', 'German')"
+		  >
+			German
+		  </button>
+		  <button
+			type="button" class="btn btn-outline-secondary me-2"
+			[ngbPopover]="popContent" [popoverTitle]="popTitle"
+			triggers="manual" #p3="ngbPopover" (click)="toggleWithGreeting(p3, 'Hello', 'English')"
+		  >
+			English
+		  </button>
+	</div>
+</div>
+
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Open and close delays</h4>
+		</div>
+		<hr/>
+		<p>
+			When using non-manual triggers, you can control the delay to open and close the popover through the <code>openDelay</code> and
+			<code>closeDelay</code> properties. Note that the <code>autoClose</code> feature does not use the close delay, it closes the popover immediately.
+		  </p>
+		  
+		  <button type="button" class="btn btn-outline-secondary me-2"
+			ngbPopover="You see, I show up after 300ms and disappear after 500ms!"
+			[openDelay]="300" [closeDelay]="500" triggers="mouseenter:mouseleave">
+			Hover 300ms here
+		  </button>
+		  
+		  <button type="button" class="btn btn-outline-secondary me-2"
+			ngbPopover="You see, I show up after 1s and disappear after 2s!"
+			[openDelay]="1000" [closeDelay]="2000" triggers="mouseenter:mouseleave">
+			Hover 1s here
+		  </button>
+	</div>
+</div>
+
+
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Popover visibility events</h4>
+		</div>
+		<hr/>
+		<button type="button" class="btn btn-outline-secondary" placement="top"
+			ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." popoverTitle="Popover on top"
+			#popover="ngbPopover" (shown)="recordShown()" (hidden)="recordHidden()">
+				Open Popover
+		</button>
+
+		<hr>
+
+		<ul>
+			<li>Popover is currently: <code>{{ popover.isOpen() ? 'open' : 'closed' }}</code></li>
+			<li>Last shown at: <code>{{lastShown | date:'h:mm:ss'}}</code></li>
+			<li>Last hidden at: <code>{{lastHidden | date:'h:mm:ss'}}</code></li>
+		</ul>
+	</div>
+</div>
+
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Popover with custom class</h4>
+		</div>
+		<hr/>
+		<p>
+			You can optionally pass in a custom class via <code>popoverClass</code>
+		  </p>
+		  
+		  <button type="button" class="btn btn-outline-secondary" ngbPopover="Nice class!"
+			popoverClass="my-custom-class">
+			Popover with custom class
+		  </button>
+	</div>
+</div>

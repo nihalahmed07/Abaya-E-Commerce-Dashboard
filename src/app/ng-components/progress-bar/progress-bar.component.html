@@ -1,0 +1,158 @@
+<!--breadcrumb-->
+<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+	<div class="breadcrumb-title pe-3">ng-Components</div>
+	<div class="ps-3">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb mb-0 p-0">
+				<li class="breadcrumb-item"><a href="#" (click)="$event.preventDefault()"><i class="bx bx-home-alt"></i></a>
+				</li>
+				<li class="breadcrumb-item active" aria-current="page">Progressbar</li>
+			</ol>
+		</nav>
+	</div>
+	<div class="ms-auto">
+		<div class="btn-group" ngbDropdown>
+			<button type="button" class="btn btn-primary">Settings</button>
+			<button type="button" class="btn btn-primary split-bg-primary dropdown-toggle dropdown-toggle-split" id="dropdownBasic1" ngbDropdownToggle>	<span class="visually-hidden">Toggle Dropdown</span>
+			</button>
+			<div ngbDropdownMenu aria-labelledby="dropdownBasic1" class="dropdown-menu-right dropdown-menu-lg-end">
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Action</a>
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Another action</a>
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Something else here</a>
+				<div class="dropdown-divider"></div>
+				<a ngbDropdownItem href="#" (click)="$event.preventDefault()">Separated link</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!--end breadcrumb-->
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Contextual progress bars</h4>
+		</div>
+		<hr>
+		<p>
+			<ngb-progressbar type="success" [value]="25"></ngb-progressbar>
+		</p>
+		<p>
+			<ngb-progressbar type="info" [value]="50"></ngb-progressbar>
+		</p>
+		<p>
+			<ngb-progressbar type="warning" [value]="75"></ngb-progressbar>
+		</p>
+		<p>
+			<ngb-progressbar type="danger" [value]="100"></ngb-progressbar>
+		</p>
+		<p>
+			<ngb-progressbar type="primary" [value]="75"></ngb-progressbar>
+		</p>
+		<p>
+			<ngb-progressbar type="secondary" [value]="50"></ngb-progressbar>
+		</p>
+		<p>
+			<ngb-progressbar type="dark" [value]="25"></ngb-progressbar>
+		</p>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Contextual text progress bars</h4>
+		</div>
+		<hr>
+		<p>
+			<ngb-progressbar type="success" textType="white" [value]="25" [showValue]="true"></ngb-progressbar>
+		</p>
+		<p>
+			<ngb-progressbar type="dark" textType="white" [value]="50" [showValue]="true"></ngb-progressbar>
+		</p>
+		<p>
+			<ngb-progressbar type="light" textType="success" [value]="75" [showValue]="true"></ngb-progressbar>
+		</p>
+		<p>
+			<ngb-progressbar type="warning" textType="dark" [value]="100" [showValue]="true"></ngb-progressbar>
+		</p>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Progress bars with current value labels</h4>
+		</div>
+		<hr>
+		<p>
+			<ngb-progressbar [showValue]="true" type="success" [value]="25"></ngb-progressbar>
+		</p>
+		<p>
+			<ngb-progressbar [showValue]="true" type="info" [value]="50"></ngb-progressbar>
+		</p>
+		<p>
+			<ngb-progressbar [showValue]="true" type="warning" [value]="150" [max]="200"></ngb-progressbar>
+		</p>
+		<p>
+			<ngb-progressbar [showValue]="true" type="danger" [value]="150" [max]="150"></ngb-progressbar>
+		</p>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Striped progress bars</h4>
+		</div>
+		<hr>
+		<p>
+			<ngb-progressbar type="success" [value]="25" [striped]="true"></ngb-progressbar>
+		</p>
+		<p>
+			<ngb-progressbar type="info" [value]="50" [striped]="true"></ngb-progressbar>
+		</p>
+		<p>
+			<ngb-progressbar type="warning" [value]="75" [striped]="true"></ngb-progressbar>
+		</p>
+		<p>
+			<ngb-progressbar type="danger" [value]="100" [striped]="true"></ngb-progressbar>
+		</p>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Progress bars with custom labels</h4>
+		</div>
+		<hr>
+		<p>
+			<ngb-progressbar type="success" [value]="25">25</ngb-progressbar>
+		</p>
+		<p>
+			<ngb-progressbar type="info" [value]="50">Copying file <b>2 of 4</b>...</ngb-progressbar>
+		</p>
+		<p>
+			<ngb-progressbar type="warning" [value]="75" [striped]="true" [animated]="true"><i>50%</i>
+			</ngb-progressbar>
+		</p>
+		<p>
+			<ngb-progressbar type="danger" [value]="100" [striped]="true">Completed!</ngb-progressbar>
+		</p>
+	</div>
+</div>
+<div class="card radius-15">
+	<div class="card-body">
+		<div class="card-title">
+			<h4 class="mb-0">Progress bars with height</h4>
+		</div>
+		<hr>
+		<p>
+			<ngb-progressbar type="success" [value]="25">default</ngb-progressbar>
+		</p>
+		<p>
+			<ngb-progressbar type="info" [value]="50" height="10px">10px</ngb-progressbar>
+		</p>
+		<p>
+			<ngb-progressbar type="warning" [value]="75" height=".5rem">.5rem</ngb-progressbar>
+		</p>
+		<p>
+			<ngb-progressbar type="danger" [value]="100" [height]="height">{{height}}</ngb-progressbar>
+		</p>
+	</div>
+</div>

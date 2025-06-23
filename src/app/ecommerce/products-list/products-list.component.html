@@ -1,0 +1,199 @@
+<!--breadcrumb-->
+<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+	<div class="breadcrumb-title pe-3">eCommerce</div>
+	<div class="ps-3">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb mb-0 p-0">
+				<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+				</li>
+				<li class="breadcrumb-item active" aria-current="page">Products List</li>
+			</ol>
+		</nav>
+	</div>
+	<div class="ms-auto">
+		<div class="btn-group">
+			<button type="button" class="btn btn-primary">Settings</button>
+			<button type="button" class="btn btn-primary split-bg-primary dropdown-toggle dropdown-toggle-split"
+				data-bs-toggle="dropdown"> <span class="visually-hidden">Toggle Dropdown</span>
+			</button>
+			<div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end"> <a class="dropdown-item"
+					href="javascript:;">Action</a>
+				<a class="dropdown-item" href="javascript:;">Another action</a>
+				<a class="dropdown-item" href="javascript:;">Something else here</a>
+				<div class="dropdown-divider"></div> <a class="dropdown-item" href="javascript:;">Separated link</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!--end breadcrumb-->
+<div class="card">
+	<div class="card-header py-3">
+
+		<div class="row align-items-center m-0">
+			<div class="col-md-3 col-12 mb-2">
+				<select class="form-select" (change)="onCategoryChange($event.target.value)">
+					<option value="all">All category</option>
+					<option value="fashion">Fashion</option>
+					<option value="electronics">Electronics</option>
+					<option value="furniture">Furniture</option>
+				</select>
+			</div>
+
+			<div class="col-md-2 col-6 mb-2">
+				<select class="form-select" (change)="onStatusChange($event.target.value)">
+					<option value="all">All Status</option>
+					<option value="publish">Active</option>
+					<option value="draft">Disabled</option>
+				</select>
+			</div>
+
+			<div class="col-md-2 col-6 mb-2">
+				<select class="form-select" (change)="onStockChange($event.target.value)">
+					<option value="all">All Stock</option>
+					<option value="instock">In Stock</option>
+					<option value="outofstock">Out of Stock</option>
+				</select>
+			</div>
+
+			<div class="col-md-3 col-12 mb-2">
+				<input type="text" class="form-control" placeholder="Search by name..."
+					(input)="onSearch($event.target.value)">
+			</div>
+		</div>
+
+	</div>
+	<div class="card-body">
+		<div class="table-responsive">
+			<table class="table align-middle table-striped">
+				<tbody>
+					<tr *ngFor="let product of products">
+						<td><input class="form-check-input" type="checkbox"></td>
+						<td class="productlist">
+							<a class="d-flex align-items-center gap-2" href="#">
+								<div class="product-box">
+									<img [src]="product.images[0]?.src" alt="{{ product.name }}">
+								</div>
+								<div>
+									<h6 class="mb-0 product-title">{{ product.name }}</h6>
+								</div>
+							</a>
+						</td>
+						<td><span>${{ product.price }}</span></td>
+						<td><span class="badge rounded-pill alert-success">{{ product.status }}</span></td>
+						<td><span>{{ product.date_created | date:'shortDate' }}</span></td>
+						<td>
+							<div class="d-flex align-items-center gap-3 fs-6">
+								<a href="javascript:;" class="text-primary" title="View" (click)="viewProduct(product)">
+									<i class="bi bi-eye-fill"></i>
+								</a>
+								<a href="javascript:;" class="text-warning" title="Edit" (click)="editProduct(product)">
+									<i class="bi bi-pencil-fill"></i>
+								</a>
+								<a href="javascript:;" class="text-danger" title="Delete"
+									(click)="deleteProduct(product.id)">
+									<i class="bi bi-trash-fill"></i>
+								</a>
+
+							</div>
+						</td>
+					</tr>
+				</tbody>
+
+			</table>
+			<!-- View/Edit Modal -->
+			<!-- <div class="modal fade show" tabindex="-1" style="display: block;" *ngIf="selectedProduct">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">{{ editMode ? 'Edit Product' : 'Product Details' }}</h5>
+							<button type="button" class="btn-close" (click)="selectedProduct = null"></button>
+						</div>
+						<div class="modal-body">
+							<div *ngIf="!editMode">
+								<img [src]="selectedProduct.images[0]?.src" class="img-fluid mb-3" />
+								<p><strong>Name:</strong> {{ selectedProduct.name }}</p>
+								<p><strong>Price:</strong> ₹{{ selectedProduct.price }}</p>
+								<p><strong>Status:</strong> {{ selectedProduct.status }}</p>
+								<p><strong>Description:</strong></p>
+								<div [innerHTML]="selectedProduct.description"></div>
+							</div>
+
+							<div *ngIf="editMode">
+								<label>Name</label>
+								<input class="form-control mb-2" [(ngModel)]="selectedProduct.name" />
+								<label>Price</label>
+								<input type="number" class="form-control mb-2" [(ngModel)]="selectedProduct.price" />
+								<label>Status</label>
+								<select class="form-select mb-3" [(ngModel)]="selectedProduct.status">
+									<option value="publish">Active</option>
+									<option value="draft">Disabled</option>
+								</select>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-secondary" (click)="selectedProduct = null">Close</button>
+							<button *ngIf="editMode" class="btn btn-primary" (click)="saveProduct()">Save</button>
+						</div>
+					</div>
+				</div>
+			</div> -->
+			
+<!-- View/Edit Modal -->
+<div class="modal fade show" tabindex="-1" style="display: block;" *ngIf="selectedProduct">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ editMode ? 'Edit Product' : 'Product Details' }}</h5>
+        <button type="button" class="btn-close" (click)="selectedProduct = null; editMode = false"></button>
+      </div>
+      <div class="modal-body">
+        <!-- VIEW MODE -->
+        <div *ngIf="!editMode">
+          <img [src]="selectedProduct.images[0]?.src" class="img-fluid mb-3" />
+          <p><strong>Name:</strong> {{ selectedProduct.name }}</p>
+          <p><strong>Price:</strong> ₹{{ selectedProduct.price }}</p>
+          <p><strong>Status:</strong> {{ selectedProduct.status }}</p>
+          <p><strong>Description:</strong></p>
+          <div [innerHTML]="selectedProduct.description"></div>
+        </div>
+
+        <!-- EDIT MODE -->
+        <div *ngIf="editMode">
+          <label>Name</label>
+          <input class="form-control mb-2" [(ngModel)]="selectedProduct.name" />
+          <label>Price</label>
+          <input type="number" class="form-control mb-2" [(ngModel)]="selectedProduct.price" />
+          <label>Status</label>
+          <select class="form-select mb-3" [(ngModel)]="selectedProduct.status">
+            <option value="publish">Active</option>
+            <option value="draft">Disabled</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="selectedProduct = null; editMode = false">Close</button>
+        <button *ngIf="editMode" class="btn btn-primary" (click)="saveProduct()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+		</div>
+		<nav class="float-end mt-4" aria-label="Page navigation">
+			<ul class="pagination">
+				<li class="page-item" [class.disabled]="currentPage === 1">
+					<a class="page-link" (click)="loadProducts(currentPage - 1)">Previous</a>
+				</li>
+				<li class="page-item" *ngFor="let p of [].constructor(totalPages); let i = index"
+					[class.active]="currentPage === i + 1">
+					<a class="page-link" (click)="loadProducts(i + 1)">{{ i + 1 }}</a>
+				</li>
+				<li class="page-item" [class.disabled]="currentPage === totalPages">
+					<a class="page-link" (click)="loadProducts(currentPage + 1)">Next</a>
+				</li>
+			</ul>
+		</nav>
+
+	</div>
+</div>
