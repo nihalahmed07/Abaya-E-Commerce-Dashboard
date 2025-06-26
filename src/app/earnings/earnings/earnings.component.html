@@ -10,20 +10,6 @@
 			</ol>
 		</nav>
 	</div>
-	<div class="ms-auto">
-		<div class="btn-group">
-			<button type="button" class="btn btn-primary">Settings</button>
-			<button type="button" class="btn btn-primary split-bg-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">	<span class="visually-hidden">Toggle Dropdown</span>
-			</button>
-			<div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end">	
-				<a class="dropdown-item" href="#" (click)="$event.preventDefault()">Action</a>
-				<a class="dropdown-item" href="#" (click)="$event.preventDefault()">Another action</a>
-				<a class="dropdown-item" href="#" (click)="$event.preventDefault()">Something else here</a>
-				<div class="dropdown-divider"></div>	
-				<a class="dropdown-item" href="#" (click)="$event.preventDefault()">Separated link</a>
-			</div>
-		</div>
-	</div>
 </div>
 <!--end breadcrumb-->
 
@@ -34,7 +20,7 @@
 				<div class="d-flex align-items-center">
 					<div>
 						<p class="mb-0 text-white">This months earnings</p>
-						<h4 class="my-1 text-white">$ 12,024.73</h4>
+						<h4 class="my-1 text-white">$ {{ thisMonthEarnings.toFixed(2) }}</h4>
 					</div>
 					<div class="text-white ms-auto font-35"><i class='bx bx-dollar'></i>
 					</div>
@@ -48,7 +34,7 @@
 				<div class="d-flex align-items-center">
 					<div>
 						<p class="mb-0 text-white">Past month</p>
-						<h4 class="my-1 text-white">$ 89,245</h4>
+						<h4 class="my-1 text-white">$ {{ pastMonthEarnings.toFixed(2) }}</h4>
 					</div>
 					<div class="text-white ms-auto font-35"><i class='bx bx-dollar'></i>
 					</div>
@@ -62,7 +48,7 @@
 				<div class="d-flex align-items-center">
 					<div>
 						<p class="mb-0 text-dark">Total earnings this year</p>
-						<h4 class="text-dark my-1">$ 309,941.02</h4>
+						<h4 class="text-dark my-1">$ {{ yearEarnings.toFixed(2) }}</h4>
 					</div>
 					<div class="text-dark ms-auto font-35"><i class='bx bx-user-pin'></i>
 					</div>
@@ -72,9 +58,28 @@
 	</div>
 </div>
 <!--end row-->
+<!-- Daily Chart -->
+<!-- <apx-chart
+  *ngIf="chartOptions"
+  [series]="chartOptions.series"
+  [chart]="chartOptions.chart"
+  [xaxis]="chartOptions.xaxis"
+  [dataLabels]="chartOptions.dataLabels"
+  [stroke]="chartOptions.stroke"
+  [title]="chartOptions.title"
+  [grid]="chartOptions.grid">
+</apx-chart> -->
+
+<!-- Top Countries -->
+<!-- <ul class="list-group list-group-flush mt-4">
+  <li *ngFor="let item of topCountryList" class="list-group-item d-flex justify-content-between align-items-center">
+    <span>{{ item.country }}</span>
+    <span class="badge bg-primary rounded-pill">{{ item.count }}</span>
+  </li>
+</ul> -->
 
 
-<div class="row row-cols-1">
+<!-- <div class="row row-cols-1">
 	<div class="col">
 		<div class="card radius-10">
 			<div class="card-body">
@@ -88,12 +93,12 @@
 			</div>
 		</div>
 	</div>
-</div>
+</div> -->
 <!--end row-->
 
 
 
-<div class="row row-cols-1 row-cols-md-1 row-cols-xl-2">
+<!-- <div class="row row-cols-1 row-cols-md-1 row-cols-xl-2">
 	<div class="col">
         <div class="card">
             <div class="card-body">
@@ -268,5 +273,5 @@
 			</div>
 		</div>
 	</div>
-</div>
+</div> -->
 <!--end row-->
