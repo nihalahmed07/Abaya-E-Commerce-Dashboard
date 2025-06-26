@@ -87,7 +87,10 @@
 								<td>{{ order.date_created | date:'dd-MM-yyyy' }}</td>
 								<td>
 									<div class="d-flex align-items-center gap-3 fs-6">
-										<a href="javascript:;" class="text-primary"><i class="bi bi-eye-fill"></i></a>
+										<a [routerLink]="['/ecommerce/order-details', order.id]" class="text-primary">
+											<i class="bi bi-eye-fill"></i>
+										</a>
+
 										<a href="javascript:;" class="text-warning"><i
 												class="bi bi-pencil-fill"></i></a>
 										<a href="javascript:;" class="text-danger"><i class="bi bi-trash-fill"></i></a>

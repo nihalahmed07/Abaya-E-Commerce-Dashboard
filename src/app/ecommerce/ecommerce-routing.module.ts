@@ -13,13 +13,13 @@ const routes: Routes = [
   {
     path: '',
     children: [
-      {
+      /* {
         path: 'products-list',
         component: ProductsListComponent,
         data: {
           title: 'Products List'
         }
-      },
+      }, */
       {
         path: 'products-grid',
         component: ProductsGridComponent,
@@ -56,12 +56,20 @@ const routes: Routes = [
       //   }
       // },
       {
-        path: 'add-new-product',
-        component: AddNewProduct2Component,
-        data: {
-          title: 'Add New Product'
-        }
-      },
+  path: 'add-new-product',
+  component: AddNewProductComponent,
+  data: {
+    title: 'Add New Product'
+  }
+},
+{
+  path: 'edit-product/:id',
+  component: AddNewProduct2Component,
+  data: {
+    title: 'Edit Product'
+  }
+},
+
       {
         path: 'transations',
         component: TransationsComponent,

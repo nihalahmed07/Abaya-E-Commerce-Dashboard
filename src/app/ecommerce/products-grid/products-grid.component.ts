@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+/* import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { WpProductsService } from 'src/app/services/wp-products.service';
 
 @Component({
@@ -8,23 +9,123 @@ import { WpProductsService } from 'src/app/services/wp-products.service';
 })
 export class ProductsGridComponent implements OnInit {
   products: any[] = [];
-  selectedProduct: any = null;
+  searchTerm: string = ''; // 👈 for search input binding
+  currentPage: number = 1;
+  totalPages: number = 1;
 
-  constructor(private wpService: WpProductsService) {}
+  constructor(
+    private wpService: WpProductsService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.loadProducts();
+  }
+
+  // ✅ Load products with optional search term
+  loadProducts(): void {
+    const params: any = {
+      per_page: 12,
+      page: this.currentPage
+    };
+
+    if (this.searchTerm.trim()) {
+      params.search = this.searchTerm.trim();
+    }
+
+    this.wpService.getProducts(params).subscribe(response => {
+      this.products = response.body;
+      const total = Number(response.headers.get('X-WP-Total'));
+    this.totalPages = Math.ceil(total / 12);
+    });
+  }
+
+  // ✅ Triggered when user types in search box
+  onSearchChange(): void {
+    this.currentPage=1;
+    this.loadProducts();
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.loadProducts();
+    }
+  }
+
+  // ✅ Navigate to edit page
+  editProduct(product: any): void {
+    this.router.navigate(['/ecommerce/edit-product', product.id]);
+  }
+
+  // ✅ Delete product and refresh list
+  deleteProduct(id: number): void {
+    if (confirm('Delete this product?')) {
+      this.wpService.deleteProduct(id).subscribe(() => {
+        this.loadProducts();
+      });
+    }
+  }
+} */
+
+
+
+  import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { WpProductsService } from 'src/app/services/wp-products.service';
+
+@Component({
+  selector: 'app-products-grid',
+  templateUrl: './products-grid.component.html',
+  styleUrls: ['./products-grid.component.scss']
+})
+export class ProductsGridComponent implements OnInit {
+  products: any[] = [];
+  searchTerm: string = '';
+  currentPage: number = 1;
+  totalPages: number = 1;
+  perPage: number = 12;
+
+  constructor(
+    private wpService: WpProductsService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadProducts();
   }
 
   loadProducts(): void {
-    this.wpService.getProducts({ per_page: 20 }).subscribe(response => {
+    const params: any = {
+      per_page: this.perPage,
+      page: this.currentPage
+    };
+
+    if (this.searchTerm.trim()) {
+      params.search = this.searchTerm.trim();
+    }
+
+    this.wpService.getProducts(params).subscribe(response => {
       this.products = response.body;
+      const totalItems = Number(response.headers.get('X-WP-Total')) || 0;
+      this.totalPages = Math.ceil(totalItems / this.perPage);
     });
   }
 
+  onSearchChange(): void {
+    this.currentPage = 1;
+    this.loadProducts();
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.loadProducts();
+    }
+  }
+
   editProduct(product: any): void {
-    this.selectedProduct = { ...product };
-    // You can show a modal here (Bootstrap/ngx-bootstrap/etc.)
+    this.router.navigate(['/ecommerce/edit-product', product.id]);
   }
 
   deleteProduct(id: number): void {
@@ -35,3 +136,5 @@ export class ProductsGridComponent implements OnInit {
     }
   }
 }
+
+

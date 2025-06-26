@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { OrdersDetailsComponent } from 'src/app/ecommerce/orders-details/orders-details.component';
 
 //Route for content layout with sidebar, navbar and footer.
 
@@ -76,9 +77,14 @@ export const Full_ROUTES: Routes = [
         path: 'charts',
         loadChildren: () => import('../../charts/chart.module').then(m => m.ChartModule)
     },
-    
+
     {
         path: 'error',
         loadChildren: () => import('./../../error/error.module').then(m => m.ErrorModule)
+    },
+
+    {
+        path: 'ecommerce/order-details/:id',
+        component: OrdersDetailsComponent
     },
 ];
