@@ -14,6 +14,11 @@ export class SalesComponent implements OnInit {
   returnCount = 0;
   transactions: any[] = [];
   customers: any[] = [];
+  pagedCustomers: any[] = [];
+currentPage = 1;
+itemsPerPage = 5;
+
+totalPages = 1;
 
   private siteUrl = 'https://cybercloudapp.com/wp-json/wc/v3';
   private consumerKey = 'ck_dd111222ce2c0914e75dc284afff6a080243a2b4';
@@ -51,10 +56,48 @@ export class SalesComponent implements OnInit {
 
     // Fetch Customers
     this.http.get<any[]>(customersUrl).subscribe(res => {
-      this.totalCustomers = res.length;
-      this.customers = res;
-    });
+  this.customers = res;
+  this.totalCustomers = res.length;
+  this.totalPages = Math.ceil(this.totalCustomers / this.itemsPerPage);
+  this.updatePagedCustomers();
+});
+
   }
+
+  deleteCustomer(id: number): void {
+    const deleteUrl = `${this.siteUrl}/customers/${id}?consumer_key=${this.consumerKey}&consumer_secret=${this.consumerSecret}&force=true`;
+
+    if (confirm('Are you sure you want to delete this customer?')) {
+      this.http.delete(deleteUrl).subscribe({
+        next: () => {
+          this.customers = this.customers.filter(c => c.id !== id);
+          alert('Customer deleted successfully.');
+        },
+        error: (err) => {
+          console.error('Delete failed:', err);
+          alert('Failed to delete customer. Check API permissions.');
+        }
+      });
+    }
+  }
+  updatePagedCustomers(): void {
+  const start = (this.currentPage - 1) * this.itemsPerPage;
+  const end = start + this.itemsPerPage;
+  this.pagedCustomers = this.customers.slice(start, end);
+}
+
+changePage(step: number): void {
+  const newPage = this.currentPage + step;
+  if (newPage >= 1 && newPage <= this.totalPages) {
+    this.currentPage = newPage;
+    this.updatePagedCustomers();
+  }
+}
+get showingTo(): number {
+  return Math.min(this.currentPage * this.itemsPerPage, this.totalCustomers);
+}
+
+
 }
 
 
