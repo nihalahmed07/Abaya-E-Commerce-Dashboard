@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
 
 import { HighchartsChartModule } from 'highcharts-angular';
 
@@ -21,7 +23,8 @@ import { CmsDashboardComponent } from './cms-dashboard/cms-dashboard.component';
     CommonModule,
     DashboardRoutingModule,
     PerfectScrollbarModule,
-    HighchartsChartModule
+    HighchartsChartModule,
+    FormsModule,
   ]
 })
 export class DashboardModule { }
