@@ -8,6 +8,8 @@
 			color: #007bff !important;
 			/* Blue text color */
 		}
+
+
 	</style>
 </head>
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
@@ -51,12 +53,18 @@
 						</div>
 					</div>
 					<div class="col-lg-2 col-6 col-md-3">
-						<select class="form-select">
-							<option>Status</option>
-							<option>Active</option>
-							<option>Disabled</option>
-							<option>Pending</option>
+						<select class="form-select" [(ngModel)]="selectedStatus" (change)="filterOrders()"
+							aria-placeholder="Status">
 							<option>Show All</option>
+							<option value="processing">Processing</option>
+							<option value="on-hold">On Hold</option>
+							<option value="cancelled">Cancelled</option>
+							<option value="completed">Completed</option>
+							<option value="checkout-draft">Draft</option>
+							<option value="pending">Pending</option>
+							<option value="refunded">Refunded</option>
+							<option value="failed">Failed</option>
+							<!-- <option value="showAll">Show All</option> -->
 						</select>
 					</div>
 					<div class="col-lg-2 col-6 col-md-3">
@@ -74,7 +82,7 @@
 						<thead class="table-light">
 							<tr>
 								<th>ID</th>
-								<th>Customer name</th>
+								<th>Customer Name</th>
 								<th>Price</th>
 								<th>Status</th>
 								<th>Date</th>
@@ -82,27 +90,27 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr *ngFor="let order of orders">
+							<tr *ngFor="let order of filteredOrders">
 								<td>#{{ order.id }}</td>
 								<td>{{ order.billing.first_name }} {{ order.billing.last_name }}</td>
 								<td>${{ order.total }}</td>
 								<td>
 									<span class="badge rounded-pill" [ngClass]="{
-              'alert-success': order.status === 'completed' || order.status === 'processing',
-              'alert-warning': order.status === 'pending',
-              'alert-danger': order.status === 'cancelled' || order.status === 'failed',
-			  'alert-primary': order.status === 'on-hold' 
-            }">
+            'alert-success': order.status === 'completed' || order.status === 'processing',
+            'alert-warning': order.status === 'refunded' || order.status === 'pending',
+            'alert-danger': order.status === 'cancelled' || order.status === 'failed',
+            'alert-primary': order.status === 'on-hold'|| order.status === 'checkout-draft'  
+            
+          }">
 										{{ order.status | titlecase }}
 									</span>
 								</td>
-								<td>{{ order.date_created | date:'dd-MM-yyyy' }}</td>
+								<td>{{ order.date_created | date: 'dd-MM-yyyy' }}</td>
 								<td>
 									<div class="d-flex align-items-center gap-3 fs-6">
 										<a [routerLink]="['/ecommerce/order-details', order.id]" class="text-primary">
 											<i class="bi bi-eye-fill"></i>
 										</a>
-
 										<a href="javascript:;" class="text-warning"><i
 												class="bi bi-pencil-fill"></i></a>
 										<a href="javascript:;" class="text-danger"><i class="bi bi-trash-fill"></i></a>
@@ -110,9 +118,9 @@
 								</td>
 							</tr>
 						</tbody>
-
 					</table>
 				</div>
+
 				<nav class="float-end" aria-label="Page navigation">
 					<ul class="pagination">
 						<li class="page-item disabled"><a class="page-link" href="#">Previous</a>
