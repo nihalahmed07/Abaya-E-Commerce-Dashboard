@@ -35,32 +35,28 @@
 			<div class="col-12 col-lg-4 d-flex">
 				<div class="card border shadow-none w-100">
 					<div class="card-body">
-						<form class="row g-3">
+						<form (ngSubmit)="editingCategoryId ? updateCategory() : addCategory()" class="row g-3">
 							<div class="col-12">
 								<label class="form-label">Name</label>
-								<input type="text" class="form-control" placeholder="Category name">
+								<input type="text" class="form-control" placeholder="Category name"
+									[(ngModel)]="newCategory.name" name="name" required>
 							</div>
 							<div class="col-12">
 								<label class="form-label">Slug</label>
-								<input type="text" class="form-control" placeholder="Slug name">
-							</div>
-							<div class="col-12">
-								<label class="form-label">Parent</label>
-								<select class="form-select">
-									<option>Fashion</option>
-									<option>Electronics</option>
-									<option>Furniture</option>
-									<option>Sports</option>
-								</select>
+								<input type="text" class="form-control" placeholder="Slug name"
+									[(ngModel)]="newCategory.slug" name="slug">
 							</div>
 							<div class="col-12">
 								<label class="form-label">Description</label>
-								<textarea class="form-control" rows="3" cols="3"
-									placeholder="Product Description"></textarea>
+								<textarea class="form-control" rows="3" cols="3" placeholder="Product Description"
+									[(ngModel)]="newCategory.description" name="description"></textarea>
 							</div>
 							<div class="col-12">
-								<div class="d-grid">
-									<button class="btn btn-primary">Add Category</button>
+								<div class="d-flex gap-2">
+									<button class="btn btn-primary" type="submit">{{ editingCategoryId ? 'Update' :
+										'Add' }} Category</button>
+									<button *ngIf="editingCategoryId" class="btn btn-secondary" type="button"
+										(click)="cancelEdit()">Cancel</button>
 								</div>
 							</div>
 						</form>
@@ -95,13 +91,21 @@
 										<td>{{ category.slug }}</td>
 										<td>{{ category.menu_order }}</td>
 										<td>
-											<div class="d-flex align-items-center gap-3 fs-6">
-												<a href="javascript:;" class="text-primary" title="View"><i
-														class="bi bi-eye-fill"></i></a>
-												<a href="javascript:;" class="text-warning" title="Edit"><i
-														class="bi bi-pencil-fill"></i></a>
-												<a href="javascript:;" class="text-danger" title="Delete"><i
-														class="bi bi-trash-fill"></i></a>
+											<div class="d-flex align-items-center gap-2 fs-6">
+												<a [href]="'https://cybercloudapp.com/product-category/' + category.slug"
+													target="_blank" class="text-primary" title="View"
+													(click)="$event.stopPropagation()">
+													<i class="bi bi-eye-fill"></i>
+												</a>
+
+												<a class="text-warning"
+													(click)="editCategory(category)" title="Edit">
+													<i class="bi bi-pencil-fill"></i>
+											    </a>
+												<a class="text-danger"
+													(click)="deleteCategory(category.id)" title="Delete">
+													<i class="bi bi-trash-fill"></i>
+											    </a>
 											</div>
 										</td>
 									</tr>
