@@ -57,7 +57,7 @@ const routes: Routes = [
       // },
       {
   path: 'add-new-product',
-  component: AddNewProductComponent,
+  component: AddNewProduct2Component,
   data: {
     title: 'Add New Product'
   }
