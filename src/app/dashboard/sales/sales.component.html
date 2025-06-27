@@ -320,6 +320,28 @@
 		
 	</div>
 </div> -->
+
+
+
+<head>
+  <style>
+    .alert-primary {
+      background-color: #cce5ff !important; /* Light blue background */
+      color: #007bff !important; /* Blue text color */
+    }
+
+    .alert-danger {
+      background-color: #f8d7da !important; /* Light red background */
+      color: #721c24 !important; /* Red text color */
+    }
+
+    .alert-warning {
+      background-color: #fff3cd !important; /* Light yellow background */
+      color: #856404 !important; /* Yellow text color */
+    }
+  </style>
+</head>
+
 <div class="row">
 	<div class="col-12 col-xl-12 col-xxl-4 d-flex">
 		<div class="card radius-10 w-100">
@@ -440,7 +462,9 @@
 									<div class="badge rounded-pill" [ngClass]="{
              'alert-success': t.status === 'completed',
              'alert-warning text-dark': t.status === 'processing',
-             'alert-danger': t.status === 'refunded'
+             'alert-danger': t.status === 'refunded',
+			  'alert-primary': t.status === 'on-hold',
+            'alert-danger': t.status === 'cancelled'
            }">
 										{{ t.status | titlecase }}
 									</div>

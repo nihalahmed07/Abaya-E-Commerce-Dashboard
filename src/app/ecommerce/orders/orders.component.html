@@ -1,4 +1,15 @@
 <!--breadcrumb-->
+
+<head>
+	<style>
+		.alert-primary {
+			background-color: #cce5ff !important;
+			/* Light blue background */
+			color: #007bff !important;
+			/* Blue text color */
+		}
+	</style>
+</head>
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
 	<div class="breadcrumb-title pe-3">eCommerce</div>
 	<div class="ps-3">
@@ -79,7 +90,8 @@
 									<span class="badge rounded-pill" [ngClass]="{
               'alert-success': order.status === 'completed' || order.status === 'processing',
               'alert-warning': order.status === 'pending',
-              'alert-danger': order.status === 'cancelled' || order.status === 'failed'
+              'alert-danger': order.status === 'cancelled' || order.status === 'failed',
+			  'alert-primary': order.status === 'on-hold' 
             }">
 										{{ order.status | titlecase }}
 									</span>
