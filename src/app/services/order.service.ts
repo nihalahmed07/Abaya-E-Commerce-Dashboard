@@ -39,14 +39,14 @@ export class OrderService {
 
   constructor(private http: HttpClient) {}
 
-  // // Method to get orders
-  // getOrders(): Observable<any[]> {
-  //   const params = new HttpParams()
-  //     .set('consumer_key', this.consumerKey)
-  //     .set('consumer_secret', this.consumerSecret);
+  // Method to get orders
+  getOrders(): Observable<any[]> {
+    const params = new HttpParams()
+      .set('consumer_key', this.consumerKey)
+      .set('consumer_secret', this.consumerSecret);
 
-  //   return this.http.get<any[]>(this.apiUrl, { params });
-  // }
+    return this.http.get<any[]>(this.apiUrl, { params });
+  }
 
   // Method to get a single order by ID
   getOrder(id: string): Observable<any> {
