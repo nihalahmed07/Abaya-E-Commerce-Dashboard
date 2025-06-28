@@ -226,11 +226,11 @@
 <div class="card">
 	<div class="card-header py-3">
 		<div class="row g-3 align-items-center">
-			<div class="col-12 col-lg-4 col-md-6 me-auto">
+			<div class="col-12 col-lg-4 col-md-6 ">
 				<h5 class="mb-1">{{ order?.date_created | date: 'short' }}</h5>
 				<p class="mb-0">Order ID: #{{ order?.id }}</p>
 			</div>
-			<div class="col-12 col-lg-3 col-6 col-md-3">
+			<div class="col-12 col-lg-4 col-6 col-md-3">
 				<select class="form-select" [(ngModel)]="selectedStatus" aria-placeholder="Status">
 					<option>Change Status</option>
 					<option value="processing">Processing</option>
@@ -243,12 +243,12 @@
 					<option value="failed">Failed</option>
 				</select>
 			</div>
-			<div class="col-12 col-lg-3 col-6 col-md-3">
+			<div class="col-12 col-lg-4 col-6 col-md-3 ">
 				<button type="button" class="btn btn-primary me-2" (click)="updateOrderStatus()">Save</button>
-				<button type="button" class="btn btn-secondary" (click)="printOrderDetails()">
+				<button type="button" class="btn btn-secondary me-2" (click)="printOrderDetails()">
 					<i class="bi bi-printer-fill"></i> Print
 				</button>
-				<button type="button" class="btn btn-success" (click)="navigateToInvoice()">Invoice</button>
+				<button type="button" class="btn btn-success me-2" (click)="navigateToInvoice()">Invoice</button>
 
 			</div>
 		</div>
