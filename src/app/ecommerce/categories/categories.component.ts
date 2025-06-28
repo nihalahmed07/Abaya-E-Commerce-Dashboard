@@ -9,6 +9,11 @@ import { Router } from '@angular/router';
 })
 export class CategoriesComponent implements OnInit {
   categories: any[] = [];
+  pagedCategories: any[] = [];
+  currentPage = 1;
+  itemsPerPage = 5;
+  totalPages = 1;
+
   newCategory = {
     name: '',
     slug: '',
@@ -25,9 +30,32 @@ export class CategoriesComponent implements OnInit {
 
   loadCategories() {
     this.categoryService.getCategories().subscribe({
-      next: (data) => this.categories = data,
+      next: (data) => {
+        this.categories = data;
+        this.totalPages = Math.ceil(this.categories.length / this.itemsPerPage);
+        this.updatePagedCategories();
+      },
       error: (err) => console.error('Failed to load categories', err)
     });
+  }
+
+  updatePagedCategories() {
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    const end = start + this.itemsPerPage;
+    this.pagedCategories = this.categories.slice(start, end);
+  }
+
+  goToPage(page: number) {
+    this.currentPage = page;
+    this.updatePagedCategories();
+  }
+
+  changePage(step: number) {
+    const nextPage = this.currentPage + step;
+    if (nextPage >= 1 && nextPage <= this.totalPages) {
+      this.currentPage = nextPage;
+      this.updatePagedCategories();
+    }
   }
 
   addCategory() {
@@ -62,7 +90,7 @@ export class CategoriesComponent implements OnInit {
     if (confirm('Are you sure you want to delete this category?')) {
       this.categoryService.deleteCategory(id).subscribe({
         next: () => {
-          this.categories = this.categories.filter(c => c.id !== id);
+          this.loadCategories();
           alert('Category deleted successfully.');
         },
         error: (err) => {
@@ -73,7 +101,7 @@ export class CategoriesComponent implements OnInit {
     }
   }
 
-  viewCategory(id: number) {
-    this.router.navigate(['/categories', id]);
+  viewCategory(slug: string) {
+    window.open(`https://cybercloudapp.com/product-category/${slug}`, '_blank');
   }
 }

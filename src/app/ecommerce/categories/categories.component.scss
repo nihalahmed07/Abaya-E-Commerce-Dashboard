@@ -1,0 +1,6 @@
+.description-cell {
+  max-width: 150px;   // or whatever width fits your layout
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
