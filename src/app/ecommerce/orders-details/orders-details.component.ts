@@ -51,8 +51,8 @@ export class OrdersDetailsComponent implements OnInit {
 
 
 
-  import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { OrderService } from 'src/app/services/order.service';
 
 @Component({
@@ -61,11 +61,13 @@ import { OrderService } from 'src/app/services/order.service';
   styleUrls: ['./orders-details.component.scss']
 })
 export class OrdersDetailsComponent implements OnInit {
-  order: any; // To store the order details
+  order: any;  // To store the order details
   orderId: string | null = null;
+  selectedStatus: string = '';  // To hold the selected status from the dropdown
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private orderService: OrderService
   ) {}
 
@@ -74,22 +76,55 @@ export class OrdersDetailsComponent implements OnInit {
     this.orderId = this.route.snapshot.paramMap.get('id');
 
     if (this.orderId) {
-      this.loadOrder(this.orderId);
+      this.loadOrder(this.orderId); // Load order data
     }
   }
 
+  // Method to fetch order by ID
   loadOrder(id: string): void {
-    // Call the service method to fetch the order by ID
     this.orderService.getOrder(id).subscribe({
       next: (data) => {
-        if (!data.shipping || Object.keys(data.shipping).length === 0) {
-          data.shipping = { ...data.billing }; // Use billing address as shipping
-        }
         this.order = data;
-         
+        this.selectedStatus = data.status;  // Set initial status from the order data
       },
-      error: (err) => console.error('Failed to fetch order details', err)
+      error: (err) => {
+        console.error('Failed to fetch order details', err);
+      },
     });
   }
+
+  // Method to update order status
+  updateOrderStatus(): void {
+    if (this.orderId && this.selectedStatus) {
+      this.order.status = this.selectedStatus; // Update the status
+
+      this.orderService.updateOrderStatus(this.orderId, this.order).subscribe({
+        next: (data) => {
+          console.log('Order status updated successfully', data);
+        },
+        error: (err) => {
+          console.error('Failed to update order status', err);
+        },
+      });
+    }
+  }
+
+  // Print functionality
+  printOrderDetails(): void {
+    const printContent = document.getElementById('printable-content')?.innerHTML;
+
+    if (printContent) {
+      const printWindow = window.open('', '_blank', 'width=800,height=600');
+      printWindow?.document.write('<html><head><title>Print Order</title></head><body>');
+      printWindow?.document.write(printContent);
+      printWindow?.document.write('</body></html>');
+      printWindow?.document.close();
+      printWindow?.print();
+    }
+  }
+
+  navigateToInvoice(): void {
+  this.router.navigate(['/application/invoice']);  // Redirects to the invoice page without the orderId
 }
 
+}
