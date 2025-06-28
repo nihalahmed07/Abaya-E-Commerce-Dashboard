@@ -14,6 +14,8 @@ import * as $ from 'jquery';
 export class SidebarComponent implements OnInit {
     
     public menuItems: any[];
+    adminLogoUrl: string | null = null;
+    adminLogo: string | null = '';
 
   
     constructor( public sidebarservice: SidebarService,private router: Router) {
@@ -76,6 +78,12 @@ export class SidebarComponent implements OnInit {
     ngOnInit() {
         this.menuItems = ROUTES.filter(menuItem => menuItem);
         $.getScript('./assets/js/app-sidebar.js');
+        const settings = localStorage.getItem('admin-settings');
+  if (settings) {
+    const parsed = JSON.parse(settings);
+    this.adminLogo = parsed.adminLogo; // ✅ This is base64
+  }
+        
 
     }
 

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class WpProductsService {
-  private baseUrl = 'https://cybercloudapp.com/wp-json/wc/v3/products';
+  private baseUrl = '/wp-json/wc/v3/products';
   private consumerKey = 'ck_dd111222ce2c0914e75dc284afff6a080243a2b4';
   private consumerSecret = 'cs_31cfcfe1e7ac08abafcf197a0d651e32a0758987';
 
@@ -81,7 +81,7 @@ uploadImage(file: File): Observable<any> {
   const appPassword = '12345678'; // Create from WordPress user profile
   const base64Token = btoa(`${username}:${appPassword}`);
 
-  return this.http.post('https://cybercloudapp.com/wp-json/wp/v2/media', formData, {
+  return this.http.post('/wp-json/wp/v2/media', formData, {
     headers: {
       Authorization: `Basic ${base64Token}`,
       'Content-Disposition': `attachment; filename="${file.name}"`,
