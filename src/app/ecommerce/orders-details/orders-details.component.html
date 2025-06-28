@@ -1,4 +1,4 @@
-<!-- breadcrumb -->
+<!-- breadcrumb -
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
 	<div class="breadcrumb-title pe-3">eCommerce</div>
 	<div class="ps-3">
@@ -10,7 +10,7 @@
 		</nav>
 	</div>
 </div>
-<!-- end breadcrumb -->
+!-- end breadcrumb -
 
 <div class="card">
 	<div class="card-header py-3">
@@ -22,10 +22,14 @@
 			<div class="col-12 col-lg-3 col-6 col-md-3">
 				<select class="form-select">
 					<option>Change Status</option>
-					<option>Awaiting Payment</option>
-					<option>Confirmed</option>
-					<option>Shipped</option>
-					<option>Delivered</option>
+					<option value="processing">Processing</option>
+					<option value="on-hold">On Hold</option>
+					<option value="cancelled">Cancelled</option>
+					<option value="completed">Completed</option>
+					<option value="checkout-draft">Draft</option>
+					<option value="pending">Pending</option>
+					<option value="refunded">Refunded</option>
+					<option value="failed">Failed</option>
 				</select>
 			</div>
 			<div class="col-12 col-lg-3 col-6 col-md-3">
@@ -37,7 +41,7 @@
 
 	<div class="card-body">
 		<div class="row row-cols-1 row-cols-xl-2 row-cols-xxl-3">
-			<!-- Customer Info -->
+			!-- Customer Info --
 			<div class="col">
 				<div class="card border shadow-none radius-10">
 					<div class="card-body">
@@ -56,7 +60,7 @@
 				</div>
 			</div>
 
-			<!-- Order Info -->
+			!-- Order Info -
 			<div class="col">
 				<div class="card border shadow-none radius-10">
 					<div class="card-body">
@@ -76,7 +80,7 @@
 				</div>
 			</div>
 
-			<!-- Delivery Info (Shipping or Billing Address) -->
+			!-- Delivery Info (Shipping or Billing Address) --
 			<div class="col">
 				<div class="card border shadow-none radius-10">
 					<div class="card-body">
@@ -104,7 +108,7 @@
 			</div>
 		</div>
 
-		<!-- Products Table -->
+		!-- Products Table --
 		<div class="row">
 			<div class="col-12 col-lg-8">
 				<div class="card border shadow-none radius-10">
@@ -144,7 +148,7 @@
 				</div>
 			</div>
 
-			<!-- Order Summary -->
+			!-- Order Summary --
 			<div class="col-12 col-lg-4">
 				<div class="card border shadow-none bg-light radius-10">
 					<div class="card-body">
@@ -177,6 +181,212 @@
 				</div>
 			</div>
 		</div>
-		<!--end row-->
+		!--end row--
+	</div>
+</div>-->
+
+
+
+
+<head>
+	<style>
+		@media print {
+
+			/* Hide all non-essential content (like sidebar) */
+			.sidebar,
+			.navbar,
+			.footer {
+				display: none;
+			}
+
+			/* Ensure the printable content takes the full width */
+			#printable-content {
+				visibility: visible;
+				width: 100%;
+				margin: 0;
+			}
+
+			/* Optional: Customize the print layout for tables */
+			.table {
+				width: 100%;
+				border: 1px solid #000;
+			}
+
+			/* Make sure print content fits well */
+			.card-body {
+				padding: 0 !important;
+			}
+		}
+	</style>
+</head>
+
+
+
+
+<div class="card">
+	<div class="card-header py-3">
+		<div class="row g-3 align-items-center">
+			<div class="col-12 col-lg-4 col-md-6 ">
+				<h5 class="mb-1">{{ order?.date_created | date: 'short' }}</h5>
+				<p class="mb-0">Order ID: #{{ order?.id }}</p>
+			</div>
+			<div class="col-12 col-lg-4 col-6 col-md-3">
+				<select class="form-select" [(ngModel)]="selectedStatus" aria-placeholder="Status">
+					<option>Change Status</option>
+					<option value="processing">Processing</option>
+					<option value="on-hold">On Hold</option>
+					<option value="cancelled">Cancelled</option>
+					<option value="completed">Completed</option>
+					<option value="checkout-draft">Draft</option>
+					<option value="pending">Pending</option>
+					<option value="refunded">Refunded</option>
+					<option value="failed">Failed</option>
+				</select>
+			</div>
+			<div class="col-12 col-lg-4 col-6 col-md-3 ">
+				<button type="button" class="btn btn-primary me-2" (click)="updateOrderStatus()">Save</button>
+				<button type="button" class="btn btn-secondary me-2" (click)="printOrderDetails()">
+					<i class="bi bi-printer-fill"></i> Print
+				</button>
+				<button type="button" class="btn btn-success me-2" (click)="navigateToInvoice()">Invoice</button>
+
+			</div>
+		</div>
+	</div>
+
+	<div class="card-body">
+		<!-- Order Details Section (Wrapped for Printing) -->
+		<div id="printable-content">
+			<div class="row row-cols-1 row-cols-xl-2 row-cols-xxl-3">
+				<!-- Customer Info -->
+				<div class="col">
+					<div class="card border shadow-none radius-10">
+						<div class="card-body">
+							<div class="d-flex align-items-center gap-3">
+								<div class="icon-box bg-light-primary border-0">
+									<i class="bi bi-person text-primary"></i>
+								</div>
+								<div class="info">
+									<h6 class="mb-2">Customer</h6>
+									<p class="mb-1">{{ order?.billing?.first_name }} {{ order?.billing?.last_name }}</p>
+									<p class="mb-1">{{ order?.billing?.email }}</p>
+									<p class="mb-1">{{ order?.billing?.phone }}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Order Info -->
+				<div class="col">
+					<div class="card border shadow-none radius-10">
+						<div class="card-body">
+							<div class="d-flex align-items-center gap-3">
+								<div class="icon-box bg-light-success border-0">
+									<i class="bi bi-truck text-success"></i>
+								</div>
+								<div class="info">
+									<h6 class="mb-2">Order Info</h6>
+									<p class="mb-1"><strong>Shipping</strong>: {{ order?.shipping?.method || 'Billing
+										address used for shipping' }}</p>
+									<p class="mb-1"><strong>Payment Method</strong>: {{ order?.payment_method }}</p>
+									<p class="mb-1"><strong>Status</strong>: {{ order?.status | titlecase }}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Delivery Info -->
+				<div class="col">
+					<div class="card border shadow-none radius-10">
+						<div class="card-body">
+							<div class="d-flex align-items-center gap-3">
+								<div class="icon-box bg-light-danger border-0">
+									<i class="bi bi-geo-alt text-danger"></i>
+								</div>
+								<div class="info">
+									<h6 class="mb-2">Deliver To</h6>
+									<p class="mb-1"><strong>City</strong>: {{ order?.shipping?.city ||
+										order?.billing?.city }}</p>
+									<p class="mb-1"><strong>Address</strong>: {{ order?.shipping?.address_1 ||
+										order?.billing?.address_1 }} {{ order?.shipping?.address_2 ||
+										order?.billing?.address_2 }}</p>
+									<p class="mb-1"><strong>State</strong>: {{ order?.shipping?.state ||
+										order?.billing?.state }}</p>
+									<p class="mb-1"><strong>Postal Code</strong>: {{ order?.shipping?.postcode ||
+										order?.billing?.postcode }}</p>
+									<p class="mb-1"><strong>Country</strong>: {{ order?.shipping?.country ||
+										order?.billing?.country }}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Products Table -->
+			<div class="row">
+				<div class="col-12 col-lg-8">
+					<div class="card border shadow-none radius-10">
+						<div class="card-body">
+							<div class="table-responsive">
+								<table class="table align-middle mb-0">
+									<thead class="table-light">
+										<tr>
+											<th>Product</th>
+											<th>Unit Price</th>
+											<th>Quantity</th>
+											<th>Total</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr *ngFor="let item of order?.line_items">
+											<td>{{ item?.name }}</td>
+											<td>${{ item?.price }}</td>
+											<td>{{ item?.quantity }}</td>
+											<td>${{ item?.total }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Order Summary -->
+				<div class="col-12 col-lg-4">
+					<div class="card border shadow-none bg-light radius-10">
+						<div class="card-body">
+							<div class="d-flex align-items-center mb-4">
+								<div>
+									<h5 class="mb-0">Order Summary</h5>
+								</div>
+								<div class="ms-auto">
+									<button type="button" class="btn alert-success radius-30 px-4">{{ order?.status |
+										titlecase }}</button>
+								</div>
+							</div>
+							<div class="d-flex align-items-center mb-3">
+								<div>
+									<p class="mb-0">Subtotal</p>
+								</div>
+								<div class="ms-auto">
+									<h5 class="mb-0">${{ order?.total }}</h5>
+								</div>
+							</div>
+							<div class="d-flex align-items-center mb-3">
+								<div>
+									<p class="mb-0">Shipping</p>
+								</div>
+								<div class="ms-auto">
+									<h5 class="mb-0">${{ order?.shipping_total }}</h5>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
