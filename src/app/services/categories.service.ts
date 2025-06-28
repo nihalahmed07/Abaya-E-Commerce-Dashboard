@@ -1,35 +1,14 @@
-/* // services/category.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class CategoryService {
-  private baseUrl = 'https://yourdomain.com/wp-json/wc/v3/products/categories';
+  private baseUrl = '/wp-json/wc/v3/products/categories';
   private consumerKey = 'ck_dd111222ce2c0914e75dc284afff6a080243a2b4';
   private consumerSecret = 'cs_31cfcfe1e7ac08abafcf197a0d651e32a0758987';
-
-  constructor(private http: HttpClient) {}
-
-  getCategories(): Observable<any[]> {
-    const params = new HttpParams()
-      .set('consumer_key', this.consumerKey)
-      .set('consumer_secret', this.consumerSecret);
-
-    return this.http.get<any[]>(this.baseUrl, { params });
-  }
-} */
-
-
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
-@Injectable({ providedIn: 'root' })
-export class CategoryService {
-  private baseUrl = 'https://cybercloudapp.com/wp-json/wc/v3/products/categories';
-  private consumerKey = 'ck_dd111222ce2c0914e75dc284afff6a080243a2b4';
-  private consumerSecret = 'cs_31cfcfe1e7ac08abafcf197a0d651e32a0758987';
+  private username = 'Admin'; // replace with your WP username
+  private appPassword = 'ovNL rJL8 5J84 rF8g vV43 Fi60'; // replace with your WP app password
 
   constructor(private http: HttpClient) {}
 
@@ -57,8 +36,10 @@ export class CategoryService {
   // ✅ Delete a category
   deleteCategory(id: number): Observable<any> {
   const url = `${this.baseUrl}/${id}`;
+  const auth = btoa(`${this.username}:${this.appPassword}`);
+
   const headers = {
-    Authorization: 'Basic ' + btoa(`${this.consumerKey}:${this.consumerSecret}`)
+    'Authorization': `Basic ${auth}`
   };
 
   return this.http.delete(url, { headers });

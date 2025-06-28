@@ -1,14 +1,13 @@
 <head>
 	<style>
 		.drop-zone {
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
+			cursor: pointer;
+			transition: background 0.2s ease;
+		}
 
-.drop-zone:hover {
-  background-color: #f1f5ff;
-}
-
+		.drop-zone:hover {
+			background-color: #f1f5ff;
+		}
 	</style>
 </head>
 
@@ -152,6 +151,47 @@
 		</div>
 	</div>
 
+
+	<!-- Update Admin Title -->
+	<div class="card radius-10 column col-lg-12">
+		<div class="card-header bg-transparent">
+			<h5 class="mb-0 mt-2">Admin Site CMS</h5>
+		</div>
+		<div class="card-body">
+			<div class="mb-3">
+				<label>Dashboard Title</label>
+				<input type="text" [(ngModel)]="adminTitle" class="form-control" placeholder="Enter new site title">
+			</div>
+
+
+
+			<div class="mb-3">
+				<label class="form-label">Upload New Logo</label>
+				<input type="file" class="form-control" (change)="onAdminLogoChange($event)" />
+			</div>
+
+			<!-- Update Admin Favicon -->
+			<div class="mb-3">
+				<label>Upload Favicon</label>
+				<input type="file" class="form-control" (change)="onAdminFaviconChange($event)" />
+			</div>
+
+
+
+
+			<button class="btn btn-success" (click)="saveAdminSettings()">Save Admin UI</button>
+		</div>
+
+	</div>
+
+
+
+
+
+
+
+
+
 	<div class="card radius-10 mt-4">
 		<div class="card-header bg-transparent">
 			<h5 class="mb-0">Pages List</h5>
@@ -211,20 +251,17 @@
 	</div>
 
 	<div class="card radius-10 mt-4">
-  <div class="card-header bg-transparent">
-    <h5 class="mb-0">Upload Media</h5>
-  </div>
-  <div class="card-body text-center">
-    <div
-      class="drop-zone border border-2 border-primary rounded p-4"
-      (drop)="onFileDrop($event)"
-      (dragover)="onDragOver($event)"
-    >
-      <p class="text-muted mb-0">Drag and drop media files here</p>
-      <input type="file" (change)="uploadLogo($event.target.files[0])" class="form-control mt-2" />
-    </div>
-  </div>
-</div>
+		<div class="card-header bg-transparent">
+			<h5 class="mb-0">Upload Media</h5>
+		</div>
+		<div class="card-body text-center">
+			<div class="drop-zone border border-2 border-primary rounded p-4" (drop)="onFileDrop($event)"
+				(dragover)="onDragOver($event)">
+				<p class="text-muted mb-0">Drag and drop media files here</p>
+				<input type="file" (change)="uploadLogo($event.target.files[0])" class="form-control mt-2" />
+			</div>
+		</div>
+	</div>
 
 
 

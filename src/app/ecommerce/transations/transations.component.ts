@@ -16,7 +16,7 @@ export class TransationsComponent implements OnInit {
   }
 
   loadTransactions() {
-    const url = 'https://cybercloudapp.com/wp-json/wc/v3/orders';
+    const url = '/wp-json/wc/v3/orders';
 
     const username = 'ck_dd111222ce2c0914e75dc284afff6a080243a2b4';
     const password = 'cs_31cfcfe1e7ac08abafcf197a0d651e32a0758987';

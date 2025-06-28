@@ -13,7 +13,7 @@ export class ForgotPasswordComponent implements OnInit {
 
 	// On SignIn link click
 	onSignIn() {
-	  this.router.navigate(['sign-in'], { relativeTo: this.route.parent });
+	  this.router.navigate(['signin-with-header-footer'], { relativeTo: this.route.parent });
 	}
 
 
