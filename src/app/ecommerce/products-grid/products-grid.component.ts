@@ -70,7 +70,7 @@ export class ProductsGridComponent implements OnInit {
 
 
 
-  import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { WpProductsService } from 'src/app/services/wp-products.service';
 
@@ -81,18 +81,29 @@ import { WpProductsService } from 'src/app/services/wp-products.service';
 })
 export class ProductsGridComponent implements OnInit {
   products: any[] = [];
+  categories: any[] = [];
   searchTerm: string = '';
   currentPage: number = 1;
   totalPages: number = 1;
   perPage: number = 12;
 
+  selectedCategory: string = '';
+  selectedSort: string = '';
+
   constructor(
     private wpService: WpProductsService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
+    this.loadCategories();
     this.loadProducts();
+  }
+
+  loadCategories(): void {
+    this.wpService.getCategories().subscribe((data: any[]) => {
+      this.categories = data;
+    });
   }
 
   loadProducts(): void {
@@ -105,6 +116,38 @@ export class ProductsGridComponent implements OnInit {
       params.search = this.searchTerm.trim();
     }
 
+    if (this.selectedCategory) {
+      params.category = this.selectedCategory;
+    }
+
+    if (this.selectedSort) {
+      switch (this.selectedSort) {
+        case 'date-desc':
+          params.orderby = 'date';
+          params.order = 'desc';
+          break;
+          case 'price-asc':
+            params.orderby = 'meta_value';
+            params.meta_key = '_price';
+            params.order = 'asc';
+            break;
+            case 'price-desc':
+              params.orderby = 'price';
+              params.order = 'desc';
+              break;
+              case 'title-asc':
+                params.orderby = 'title';
+                params.order = 'asc';
+                break;
+                case 'title-desc':
+                  params.orderby = 'title';
+                  params.order = 'desc';
+                  break;
+                }
+                console.log('Loading with params:', params);
+    }
+
+
     this.wpService.getProducts(params).subscribe(response => {
       this.products = response.body;
       const totalItems = Number(response.headers.get('X-WP-Total')) || 0;
@@ -113,6 +156,16 @@ export class ProductsGridComponent implements OnInit {
   }
 
   onSearchChange(): void {
+    this.currentPage = 1;
+    this.loadProducts();
+  }
+  
+  onCategoryChange(): void {
+    this.currentPage = 1;
+    this.loadProducts();
+  }
+  
+  onSortChange(): void {
     this.currentPage = 1;
     this.loadProducts();
   }
@@ -136,5 +189,4 @@ export class ProductsGridComponent implements OnInit {
     }
   }
 }
-
 

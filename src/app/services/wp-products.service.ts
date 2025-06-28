@@ -25,6 +25,17 @@ export class WpProductsService {
     return this.http.get(this.baseUrl, { params: httpParams, observe: 'response' });
   }
 
+  getCategories(): Observable<any[]> {
+  const url = 'https://cybercloudapp.com/wp-json/wc/v3/products/categories';
+  const params = new HttpParams()
+    .set('consumer_key', this.consumerKey)
+    .set('consumer_secret', this.consumerSecret)
+    .set('per_page', '100');
+
+  return this.http.get<any[]>('https://cybercloudapp.com/wp-json/wc/v3/products/categories', { params });
+}
+
+
   // Get single product
 getProduct(id: number): Observable<any> {
   const params = this.authParams();
