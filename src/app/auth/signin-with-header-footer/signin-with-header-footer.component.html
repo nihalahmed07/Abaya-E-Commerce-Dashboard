@@ -4,9 +4,13 @@
 		<header>
 			<nav class="navbar navbar-expand-lg navbar-light bg-white rounded-0 border-bottom">
 				<div class="container">
-					<a class="navbar-brand" href="#">
+					<div class="navbar-brand" style="display: flex; align-items: center; justify-content: space-between;">
+						<img [src]="adminLogo || 'assets/images/brand-logo-2'" class="logo-icon" alt="logo icon">
+						<h4 class="logo-text">{{ adminTitle || 'Admin Panel' }}</h4>
+					</div>
+					<!-- <a class="navbar-brand" href="#">
 						<img src="assets/images/brand-logo-2.png" width="140" alt="" />
-					</a>
+					</a> -->
 					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span>
 					</button>
 					<div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -72,14 +76,15 @@
 								<div class="card-body p-4 p-sm-5">
 									<h5 class="card-title">Sign In</h5>
 									<p class="card-text mb-4">See your growth and get consulting support!</p>
-									<form class="form-body">
+									<form class="form-body" (ngSubmit)="onSubmitSignIn()" #signInForm="ngForm">
+
 										<div class="row g-3">
 											<div class="col-12">
 												<label for="inputEmailAddress" class="form-label">Email Address</label>
 												<div class="ms-auto position-relative">
 													<div class="position-absolute top-50 translate-middle-y search-icon px-3"><i class="bi bi-envelope-fill"></i>
 													</div>
-													<input type="email" class="form-control radius-30 ps-5" id="inputEmailAddress" placeholder="Email">
+													<input type="email" [(ngModel)]="email" name="email" class="form-control radius-30 ps-5" id="inputEmailAddress" placeholder="Email" required>
 												</div>
 											</div>
 											<div class="col-12">
@@ -87,7 +92,7 @@
 												<div class="ms-auto position-relative">
 													<div class="position-absolute top-50 translate-middle-y search-icon px-3"><i class="bi bi-lock-fill"></i>
 													</div>
-													<input type="password" class="form-control radius-30 ps-5" id="inputChoosePassword" placeholder="Password">
+													<input type="password" [(ngModel)]="password" name="password" class="form-control radius-30 ps-5" id="inputChoosePassword" placeholder="Password" required>
 												</div>
 											</div>
 											<div class="col-6">
