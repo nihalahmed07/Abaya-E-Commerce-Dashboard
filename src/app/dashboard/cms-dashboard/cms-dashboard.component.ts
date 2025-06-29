@@ -65,7 +65,7 @@ export class CmsDashboardComponent implements OnInit {
 // }
 
 loadAdminSettings() {
-  const url = `${this.baseUrl}/custom/v1/admin-settings`;
+  const url = `${this.baseUrl}/wp-json/custom/v1/admin-settings`;
   const auth = btoa(`${this.username}:${this.appPassword}`);
 
   const headers = {
@@ -305,12 +305,28 @@ fetchCategoryCount() {
 }
 
 
-updateSiteTitle() {
-  const url = 'https://cybercloudapp.com/wp-json/wp/v2/settings';
-  const username = this.username; // e.g., 'admin';
-  const appPassword = this.appPassword; // e.g., 'abc xyz 123...';
-  const auth = btoa(`${username}:${appPassword}`);
+// updateSiteTitle() {
+//   const url = 'https://cybercloudapp.com/wp-json/wp/v2/settings';
+//   const username = this.username; // e.g., 'admin';
+//   const appPassword = this.appPassword; // e.g., 'abc xyz 123...';
+//   const auth = btoa(`${username}:${appPassword}`);
 
+//   const headers = {
+//     'Authorization': `Basic ${auth}`,
+//     'Content-Type': 'application/json'
+//   };
+
+//   const body = { title: this.siteTitle };
+
+//   this.http.post(url, body, { headers }).subscribe({
+//     next: res => alert('✅ Site title updated successfully!'),
+//     error: err => console.error('❌ Error updating title:', err)
+//   });
+// }
+
+updateSiteTitle() {
+  const url = `${this.baseUrl}/wp/v2/settings`; // ✅ WP frontend site title
+  const auth = btoa(`${this.username}:${this.appPassword}`);
   const headers = {
     'Authorization': `Basic ${auth}`,
     'Content-Type': 'application/json'
@@ -318,11 +334,18 @@ updateSiteTitle() {
 
   const body = { title: this.siteTitle };
 
-  this.http.post(url, body, { headers }).subscribe({
-    next: res => alert('✅ Site title updated successfully!'),
-    error: err => console.error('❌ Error updating title:', err)
+  this.http.post<any>(url, body, { headers }).subscribe({
+    next: () => {
+      alert('✅ WordPress site title updated successfully!');
+    },
+    error: err => {
+      console.error('❌ Failed to update WP title:', err);
+      alert('❌ Error updating WordPress site title');
+    }
   });
 }
+
+
 
 
 setSiteLogo(mediaId: number) {

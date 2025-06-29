@@ -513,13 +513,14 @@
 <div class="row">
 	<div class="col-12 col-xl-12 col-xxl-4 d-flex">
 		<div class="card radius-10 w-100">
-			<div class="card-body">
+			<div class="card-body" style="flex: 0">
 				<div class="row g-3 align-items-center">
 					<div class="col-9">
 						<h5 class="mb-0">New Customers</h5>
 					</div>
 				</div>
 			</div>
+			<div style="display: flex; flex-direction: column; height: 100%; justify-content: space-between;">
 			<!-- New Customer List -->
 			<div class="new-customer-list p-3 mb-3" [ngClass]="{ 'empty-state': pagedCustomers.length === 0 }"
 				[perfectScrollbar]>
@@ -528,6 +529,7 @@
 					<p>No new customers available.</p>
 				</div>
 
+			
 				<!-- List Customers if available -->
 				<div *ngFor="let customer of pagedCustomers" class="d-flex align-items-center gap-3 customer-list-item">
 					<img [src]="customer.avatar_url || 'assets/images/avatars/default.png'" class="rounded-circle"
@@ -561,6 +563,7 @@
 						Next
 					</button>
 				</div>
+			</div>
 			</div>
 		</div>
 	</div>
