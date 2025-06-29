@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ROUTES } from './sidebar-routes.config';
 import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
 import { SidebarService } from "./sidebar.service";
+import { AdminSettingsService } from '../../services/admin-settings.service';
 
 import * as $ from 'jquery';
 
@@ -13,12 +14,12 @@ import * as $ from 'jquery';
 
 export class SidebarComponent implements OnInit {
     
-    public menuItems: any[];
-    adminLogoUrl: string | null = null;
-    adminLogo: string | null = '';
+     public menuItems: any[];
+  adminLogo: string = '';
+  adminTitle: string = 'Admin Panel'; // Default fallback
 
   
-    constructor( public sidebarservice: SidebarService,private router: Router) {
+    constructor( public sidebarservice: SidebarService,private router: Router, private adminSettings: AdminSettingsService) {
 
         router.events.subscribe( (event: Event) => {
 
@@ -78,13 +79,16 @@ export class SidebarComponent implements OnInit {
     ngOnInit() {
         this.menuItems = ROUTES.filter(menuItem => menuItem);
         $.getScript('./assets/js/app-sidebar.js');
-        const settings = localStorage.getItem('admin-settings');
-  if (settings) {
-    const parsed = JSON.parse(settings);
-    this.adminLogo = parsed.adminLogo; // ✅ This is base64
+        this.adminSettings.loadSettingsFromServer().subscribe({
+            next: (settings) => {
+                this.adminLogo = settings.adminLogo || '';
+                this.adminTitle = settings.adminTitle || 'Admin Panel';
+                this.adminSettings.applyToHead(settings);
+            },
+            error: (err) => console.error('❌ Failed to load admin settings:', err)
+        });
   }
         
 
-    }
 
 }

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class CategoryService {
-  private baseUrl = '/wp-json/wc/v3/products/categories';
+  private baseUrl = 'https://cybercloudapp.com/wp-json/wc/v3/products/categories';
   private consumerKey = 'ck_dd111222ce2c0914e75dc284afff6a080243a2b4';
   private consumerSecret = 'cs_31cfcfe1e7ac08abafcf197a0d651e32a0758987';
   private username = 'Admin'; // replace with your WP username

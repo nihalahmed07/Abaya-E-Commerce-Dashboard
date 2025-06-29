@@ -23,7 +23,7 @@ export class CmsDashboardComponent implements OnInit {
   
 
 
-  private baseUrl = '/wp-json';
+  private baseUrl = 'https://cybercloudapp.com/wp-json';
   private wcKey = 'ck_dd111222ce2c0914e75dc284afff6a080243a2b4';
   private wcSecret = 'cs_31cfcfe1e7ac08abafcf197a0d651e32a0758987';
   private username = 'Admin'; // replace with your WP username
@@ -65,22 +65,21 @@ export class CmsDashboardComponent implements OnInit {
 // }
 
 loadAdminSettings() {
-  const stored = localStorage.getItem('admin-settings');
-  if (stored) {
-    const settings = JSON.parse(stored);
+  const url = `${this.baseUrl}/custom/v1/admin-settings`;
+  const auth = btoa(`${this.username}:${this.appPassword}`);
+
+  const headers = {
+    'Authorization': `Basic ${auth}`
+  };
+
+  this.http.get<any>(url, { headers }).subscribe(settings => {
     this.adminTitle = settings.adminTitle;
     this.adminLogo = settings.adminLogo;
     this.adminFavicon = settings.adminFavicon;
-  } else {
-    this.http.get<any>('assets/admin-settings.json').subscribe(settings => {
-      this.adminTitle = settings.adminTitle;
-      this.adminLogo = settings.adminLogo;
-      this.adminFavicon = settings.adminFavicon;
-    });
-  }
-
-  this.applySettingsToHead();
+    this.applySettingsToHead();
+  });
 }
+
 
 
 
@@ -175,20 +174,37 @@ onAdminFaviconChange(event: any) {
   
 // }
 saveAdminSettings() {
-  const settings = {
+  const url = `${this.baseUrl}/custom/v1/admin-settings`;
+  const auth = btoa(`${this.username}:${this.appPassword}`);
+
+  const headers = {
+    'Authorization': `Basic ${auth}`,
+    'Content-Type': 'application/json'
+  };
+
+  const body = {
     adminTitle: this.adminTitle,
     adminLogo: this.adminLogo,
     adminFavicon: this.adminFavicon
   };
-  localStorage.setItem('admin-settings', JSON.stringify(settings));
-  this.applySettingsToHead();
-  alert('✅ Admin UI updated (local only)');
+
+  this.http.post<any>(url, body, { headers }).subscribe({
+    next: () => {
+      this.applySettingsToHead();
+      alert('✅ Admin UI saved to backend!');
+    },
+    error: err => {
+      console.error('❌ Failed to save admin settings:', err);
+      alert('❌ Error saving settings');
+    }
+  });
 }
 
 
 
+
   getSiteSettings() {
-  const url = '/wp-json/wp/v2/settings';
+  const url = 'https://cybercloudapp.com/wp-json/wp/v2/settings';
   const username = this.username; // e.g., 'admin'
   const appPassword = this.appPassword; // e.g., 'abc xyz 123...'
   const auth = btoa(`${username}:${appPassword}`);
@@ -290,7 +306,7 @@ fetchCategoryCount() {
 
 
 updateSiteTitle() {
-  const url = '/wp-json/wp/v2/settings';
+  const url = 'https://cybercloudapp.com/wp-json/wp/v2/settings';
   const username = this.username; // e.g., 'admin';
   const appPassword = this.appPassword; // e.g., 'abc xyz 123...';
   const auth = btoa(`${username}:${appPassword}`);
@@ -310,7 +326,7 @@ updateSiteTitle() {
 
 
 setSiteLogo(mediaId: number) {
-  const url = '/wp-json/custom/v1/set-logo';
+  const url = 'https://cybercloudapp.com/wp-json/custom/v1/set-logo';
 
   const username = this.username; // same one used to generate app password
   const appPassword = this.appPassword; // same app password used for authentication
@@ -338,7 +354,7 @@ setSiteLogo(mediaId: number) {
 
 
 uploadLogo(file: File) {
-  const url = '/wp-json/wp/v2/media';
+  const url = 'https://cybercloudapp.com/wp-json/wp/v2/media';
   // const username = this.username; // replace with your WP username
   // const appPassword = this.appPassword; // replace with your WP app password
   // const auth = btoa(`${username}:${appPassword}`);

@@ -1,34 +1,41 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class AdminSettingsService {
-  private siteTitle = 'Default Admin';
-  private logoUrl: string | null = null;
-  private faviconUrl: string | null = null;
+  private renderer: Renderer2;
+  baseUrl = 'https://cybercloudapp.com/wp-json';
+  username = 'Admin';
+  appPassword = 'ovNL rJL8 5J84 rF8g vV43 Fi60'; // Replace with your actual app password
 
-  setSiteTitle(title: string) {
-    this.siteTitle = title;
-    document.title = title;
+  adminTitle = '';
+  adminFavicon = '';
+  adminLogo = '';
+
+  constructor(private http: HttpClient, rendererFactory: RendererFactory2) {
+    this.renderer = rendererFactory.createRenderer(null, null);
   }
 
-  setLogoUrl(url: string) {
-    this.logoUrl = url;
+  loadSettingsFromServer() {
+    const auth = btoa(`${this.username}:${this.appPassword}`);
+    const headers = { 'Authorization': `Basic ${auth}` };
+
+    return this.http.get<any>(`${this.baseUrl}/custom/v1/admin-settings`, { headers });
   }
 
-  setFaviconUrl(url: string) {
-    this.faviconUrl = url;
-    const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-    link.setAttribute('type', 'image/x-icon');
-    link.setAttribute('rel', 'shortcut icon');
-    link.setAttribute('href', url);
-    document.getElementsByTagName('head')[0].appendChild(link);
-  }
+  applyToHead(settings: any) {
+    this.adminTitle = settings.adminTitle;
+    this.adminFavicon = settings.adminFavicon;
+    this.adminLogo = settings.adminLogo;
 
-  getSettings() {
-    return {
-      siteTitle: this.siteTitle,
-      logoUrl: this.logoUrl,
-      faviconUrl: this.faviconUrl
-    };
+    document.title = this.adminTitle;
+
+    let faviconEl = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
+    if (!faviconEl) {
+      faviconEl = this.renderer.createElement('link');
+      faviconEl.rel = 'icon';
+      this.renderer.appendChild(document.head, faviconEl);
+    }
+    faviconEl.href = this.adminFavicon;
   }
 }

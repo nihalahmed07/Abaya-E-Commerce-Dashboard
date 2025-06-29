@@ -96,8 +96,7 @@
               "browserTarget": "Skodash:build:production"
             },
             "development": {
-              "browserTarget": "Skodash:build:development",
-              "proxyConfig": "proxy.conf.json" 
+              "browserTarget": "Skodash:build:development"
             }
           },
           "defaultConfiguration": "development"
