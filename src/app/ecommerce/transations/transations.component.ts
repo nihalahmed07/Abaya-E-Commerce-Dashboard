@@ -24,8 +24,9 @@ export class TransationsComponent implements OnInit {
   loadTransactions() {
     const url = 'https://cybercloudapp.com/wp-json/wc/v3/orders';
 
-    const username = 'ck_dd111222ce2c0914e75dc284afff6a080243a2b4';
-    const password = 'cs_31cfcfe1e7ac08abafcf197a0d651e32a0758987';
+    const username = 'ck_a5d1866cd08f77c20b601dd09746f0f00c3b6878';
+    const password = 'cs_729c552b1298055023ea6985f4120d5619ae1c0a';
+
 
     const headers = new HttpHeaders({
       'Authorization': 'Basic ' + btoa(username + ':' + password)

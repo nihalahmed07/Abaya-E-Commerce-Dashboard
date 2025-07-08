@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class WpProductsService {
   private baseUrl = 'https://cybercloudapp.com/wp-json/wc/v3/products';
-  private consumerKey = 'ck_dd111222ce2c0914e75dc284afff6a080243a2b4';
-  private consumerSecret = 'cs_31cfcfe1e7ac08abafcf197a0d651e32a0758987';
+  private consumerKey = 'ck_a5d1866cd08f77c20b601dd09746f0f00c3b6878';
+  private consumerSecret = 'cs_729c552b1298055023ea6985f4120d5619ae1c0a';
 
   constructor(private http: HttpClient) {}
 
@@ -88,8 +88,8 @@ uploadImage(file: File): Observable<any> {
   const formData = new FormData();
   formData.append('file', file);
 
-  const username = 'nihalahmed07';
-  const appPassword = '12345678'; // Create from WordPress user profile
+  const username = 'admin';
+  const appPassword = 'Abcd246@1'; // Create from WordPress user profile
   const base64Token = btoa(`${username}:${appPassword}`);
 
   return this.http.post('https://cybercloudapp.com/wp-json/wp/v2/media', formData, {
