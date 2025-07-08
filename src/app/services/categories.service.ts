@@ -35,7 +35,7 @@ export class CategoryService {
 
   // ✅ Delete a category
   deleteCategory(id: number): Observable<any> {
-  const url = `${this.baseUrl}/${id}`;
+  const url = `${this.baseUrl}/${id}?force=true`;
   const auth = btoa(`${this.username}:${this.appPassword}`);
 
   const headers = {
