@@ -73,4 +73,22 @@ export class OrderService {
       params,
     });
   }
+
+  deleteOrder(orderId: number): Observable<any> {
+  const params = new HttpParams()
+    .set('consumer_key', this.consumerKey)
+    .set('consumer_secret', this.consumerSecret);
+
+  return this.http.delete(`${this.apiUrl}/${orderId}`, { params });
+}
+updateOrder(orderId: string, updatedData: any): Observable<any> {
+  const params = new HttpParams()
+    .set('consumer_key', this.consumerKey)
+    .set('consumer_secret', this.consumerSecret);
+
+  const headers = new HttpHeaders().set('Content-Type', 'application/json');
+
+  return this.http.put(`${this.apiUrl}/${orderId}`, updatedData, { headers, params });
+}
+
 }
