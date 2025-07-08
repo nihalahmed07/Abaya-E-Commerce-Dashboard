@@ -123,8 +123,13 @@ export class OrdersDetailsComponent implements OnInit {
     }
   }
 
-  navigateToInvoice(): void {
-  this.router.navigate(['/application/invoice']);  // Redirects to the invoice page without the orderId
-}
+//   navigateToInvoice(): void {
+//   this.router.navigate(['/application/invoice']);  // Redirects to the invoice page without the orderId
+// }
 
+navigateToInvoice(): void {
+  if (this.orderId) {
+    this.router.navigate(['/application/invoice', this.orderId]);  // ✅ Pass the orderId as a route param
+  }
+}
 }

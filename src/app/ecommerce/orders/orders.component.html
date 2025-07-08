@@ -49,7 +49,14 @@
 							<div class="position-absolute top-50 translate-middle-y search-icon px-3"><i
 									class="bi bi-search"></i>
 							</div>
-							<input class="form-control ps-5" type="text" placeholder="search produts">
+							<!-- <input class="form-control ps-5" type="text" placeholder="search produts"> -->
+							 <input
+  class="form-control ps-5"
+  type="text"
+  placeholder="search products"
+  [(ngModel)]="searchTerm"
+  (input)="filterOrders()" />
+
 						</div>
 					</div>
 					<div class="col-lg-2 col-6 col-md-3">
@@ -68,12 +75,13 @@
 						</select>
 					</div>
 					<div class="col-lg-2 col-6 col-md-3">
-						<select class="form-select">
-							<option>Show 10</option>
-							<option>Show 30</option>
-							<option>Show 50</option>
-						</select>
-					</div>
+  <select class="form-select" [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange()">
+    <option [value]="5">Show 5</option>
+    <option [value]="10">Show 10</option>
+    <option [value]="30">Show 30</option>
+    <option [value]="50">Show 50</option>
+  </select>
+</div>
 				</div>
 			</div>
 			<div class="card-body">
@@ -90,7 +98,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr *ngFor="let order of filteredOrders">
+							<tr *ngFor="let order of paginatedOrders">
 								<td>#{{ order.id }}</td>
 								<td>{{ order.billing.first_name }} {{ order.billing.last_name }}</td>
 								<td>${{ order.total }}</td>
@@ -111,9 +119,12 @@
 										<a [routerLink]="['/ecommerce/order-details', order.id]" class="text-primary">
 											<i class="bi bi-eye-fill"></i>
 										</a>
-										<a href="javascript:;" class="text-warning"><i
-												class="bi bi-pencil-fill"></i></a>
-										<a href="javascript:;" class="text-danger"><i class="bi bi-trash-fill"></i></a>
+										 <a href="javascript:;" class="text-warning" (click)="editOrder(order)">
+                      <i class="bi bi-pencil-fill"></i>
+                    </a>
+                    <a href="javascript:;" class="text-danger" (click)="deleteOrder(order.id)">
+                      <i class="bi bi-trash-fill"></i>
+                    </a>
 									</div>
 								</td>
 							</tr>
@@ -121,21 +132,22 @@
 					</table>
 				</div>
 
-				<nav class="float-end" aria-label="Page navigation">
-					<ul class="pagination">
-						<li class="page-item disabled"><a class="page-link" href="#">Previous</a>
-						</li>
-						<li class="page-item active"><a class="page-link" href="#">1</a>
-						</li>
-						<li class="page-item"><a class="page-link" href="#">2</a>
-						</li>
-						<li class="page-item"><a class="page-link" href="#">3</a>
-						</li>
-						<li class="page-item"><a class="page-link" href="#">Next</a>
-						</li>
-					</ul>
-				</nav>
-			</div>
+	<nav class="float-end" *ngIf="filteredOrders.length > itemsPerPage">
+  <ul class="pagination">
+    <li class="page-item" [class.disabled]="currentPage === 1">
+      <a class="page-link" (click)="goToPage(currentPage - 1)">Previous</a>
+    </li>
+
+    <li class="page-item" *ngFor="let page of getTotalPages(); let i = index" 
+        [class.active]="i + 1 === currentPage">
+      <a class="page-link" (click)="goToPage(i + 1)">{{ i + 1 }}</a>
+    </li>
+
+    <li class="page-item" [class.disabled]="currentPage === getTotalPages().length">
+      <a class="page-link" (click)="goToPage(currentPage + 1)">Next</a>
+    </li>
+  </ul>
+</nav>	</div>
 		</div>
 	</div>
 	<div class="col-12 col-lg-3 d-flex">
@@ -182,4 +194,59 @@
 		</div>
 	</div>
 </div>
+
+
+
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editOrderModal" tabindex="-1" aria-labelledby="editOrderModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form (ngSubmit)="saveOrderEdits()">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editOrderModalLabel">Edit Order</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+          <div class="mb-3">
+            <label>First Name</label>
+            <input type="text" [(ngModel)]="editableOrder.billing.first_name" name="firstName" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label>Last Name</label>
+            <input type="text" [(ngModel)]="editableOrder.billing.last_name" name="lastName" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label>Total</label>
+            <input type="text" [(ngModel)]="editableOrder.total" name="total" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label>Status</label>
+            <select [(ngModel)]="editableOrder.status" name="status" class="form-select">
+              <option value="pending">Pending</option>
+              <option value="processing">Processing</option>
+              <option value="on-hold">On Hold</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="refunded">Refunded</option>
+              <option value="failed">Failed</option>
+            </select>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <!--end row-->
+
+
