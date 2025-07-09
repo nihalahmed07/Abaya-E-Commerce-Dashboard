@@ -65,7 +65,7 @@ export class CmsDashboardComponent implements OnInit {
 // }
 
 loadAdminSettings() {
-  const url = `${this.baseUrl}/wp-json/custom/v1/admin-settings`;
+  const url = `${this.baseUrl}/custom/v1/admin-settings`;
   const auth = btoa(`${this.username}:${this.appPassword}`);
 
   const headers = {
