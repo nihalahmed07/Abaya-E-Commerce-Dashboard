@@ -577,6 +577,25 @@
 						<h5 class="mb-0">Transaction History</h5>
 					</div>
 				</div>
+				<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <label for="itemsPerPageSelect" class="me-2">Show</label>
+    <select id="itemsPerPageSelect" class="form-select d-inline w-auto"
+            [(ngModel)]="transactionItemsPerPage"
+            (change)="onTransactionLimitChange()">
+			    <option [ngValue]="2">2</option>
+      <option [ngValue]="5">5</option>
+      <option [ngValue]="10">10</option>
+      <option [ngValue]="15">15</option>
+      <option [ngValue]="30">30</option>
+    </select>
+    <span class="ms-2">entries</span>
+  </div>
+
+  <input type="text" class="form-control w-auto" placeholder="Search by name..."
+         [(ngModel)]="searchTerm"
+         (ngModelChange)="onSearchChange()" />
+</div>
 				<div class="table-responsive mt-4">
 					<table class="table align-middle mb-0 table-hover" id="Transaction-History">
 						<thead class="table-light">
@@ -588,7 +607,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr *ngFor="let t of transactions">
+							<tr *ngFor="let t of paginatedTransactions">
 								<td>
 									<div class="d-flex align-items-center">
 										<div><img src="assets/images/avatars/avatar-1.png" class="rounded-circle"
@@ -615,6 +634,25 @@
 							</tr>
 						</tbody>
 					</table>
+						<div class="d-flex justify-content-between align-items-center mt-3">
+  <div>
+    Showing {{ (transactionCurrentPage - 1) * transactionItemsPerPage + 1 }} to
+    {{ getTransactionRangeEnd() }} of {{ filteredTransactions.length }} entries
+  </div>
+  <div>
+    <button class="btn btn-sm btn-outline-primary me-2"
+            [disabled]="transactionCurrentPage === 1"
+            (click)="changeTransactionPage(-1)">
+      Previous
+    </button>
+    <span>Page {{ transactionCurrentPage }} of {{ totalTransactionPages }}</span>
+    <button class="btn btn-sm btn-outline-primary ms-2"
+            [disabled]="transactionCurrentPage === totalTransactionPages"
+            (click)="changeTransactionPage(1)">
+      Next
+    </button>
+  </div>
+</div>
 				</div>
 			</div>
 		</div>

@@ -1,3 +1,4 @@
+
 /* import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
@@ -122,7 +123,11 @@ export class SalesComponent implements OnInit {
   currentPage = 1;
   itemsPerPage = 5;
   totalPages = 1;
-
+  searchTerm: string = '';
+filteredTransactions: any[] = [];
+paginatedTransactions: any[] = [];
+transactionCurrentPage = 1;
+transactionItemsPerPage = 5;
   private siteUrl = 'https://cybercloudapp.com/wp-json/wc/v3';
   private consumerKey = 'ck_a5d1866cd08f77c20b601dd09746f0f00c3b6878';
   private consumerSecret = 'cs_729c552b1298055023ea6985f4120d5619ae1c0a';
@@ -138,40 +143,91 @@ export class SalesComponent implements OnInit {
   }
 
   // Load statistics for orders and sales data
-  loadStats() {
-    const ordersUrl = `${this.siteUrl}/orders?consumer_key=${this.consumerKey}&consumer_secret=${this.consumerSecret}&per_page=100`;
-    const customersUrl = `${this.siteUrl}/customers?consumer_key=${this.consumerKey}&consumer_secret=${this.consumerSecret}`;
+  // loadStats() {
+  //   const ordersUrl = `${this.siteUrl}/orders?consumer_key=${this.consumerKey}&consumer_secret=${this.consumerSecret}&per_page=100`;
+  //   const customersUrl = `${this.siteUrl}/customers?consumer_key=${this.consumerKey}&consumer_secret=${this.consumerSecret}`;
 
-    // Fetch Orders
-    this.http.get<any[]>(ordersUrl).subscribe(res => {
-      this.totalOrders = res.length;
-      this.totalSales = res.reduce((sum, order) => sum + parseFloat(order.total), 0);
-      this.returnCount = res.filter(order => order.status === 'refunded').length;
-      this.transactions = res.map(order => ({
-        billing: order.billing,
-        id: order.id,
-        date_created: order.date_created,
-        total: order.total,
-        status: order.status
-      }));
+  //   // Fetch Orders
+  //   this.http.get<any[]>(ordersUrl).subscribe(res => {
+  //     this.totalOrders = res.length;
+  //     this.totalSales = res.reduce((sum, order) => sum + parseFloat(order.total), 0);
+  //     this.returnCount = res.filter(order => order.status === 'refunded').length;
+  //     this.transactions = res.map(order => ({
+  //       billing: order.billing,
+  //       id: order.id,
+  //       date_created: order.date_created,
+  //       total: order.total,
+  //       status: order.status
+  //     }));
 
-      // Calculate completed purchase total
-      this.purchaseAmount = res
-        .filter(order => order.status === 'completed')
-        .reduce((sum, order) => sum + parseFloat(order.total), 0);
-    });
-  }
+  //     // Calculate completed purchase total
+  //     this.purchaseAmount = res
+  //       .filter(order => order.status === 'completed')
+  //       .reduce((sum, order) => sum + parseFloat(order.total), 0);
+  //   });
+  // }
+    loadStats() {
+  const ordersUrl = `${this.siteUrl}/orders?consumer_key=${this.consumerKey}&consumer_secret=${this.consumerSecret}&per_page=100`;
 
+  this.http.get<any[]>(ordersUrl).subscribe(res => {
+    this.totalOrders = res.length;
+    this.totalSales = res.reduce((sum, order) => sum + parseFloat(order.total), 0);
+    this.returnCount = res.filter(order => order.status === 'refunded').length;
+
+    this.transactions = res.map(order => ({
+      billing: order.billing,
+      id: order.id,
+      date_created: order.date_created,
+      total: order.total,
+      status: order.status
+    }));
+
+    this.purchaseAmount = res
+      .filter(order => order.status === 'completed')
+      .reduce((sum, order) => sum + parseFloat(order.total), 0);
+
+    // Initial setup for filtered and paginated transactions
+    this.filteredTransactions = this.transactions;
+    this.updatePaginatedTransactions();
+  });
+}
+updatePaginatedTransactions(): void {
+  const filtered = this.transactions.filter(t =>
+    (t.billing.first_name + ' ' + t.billing.last_name)
+      .toLowerCase()
+      .includes(this.searchTerm.toLowerCase())
+  );
+
+  this.filteredTransactions = filtered;
+
+  const start = (this.transactionCurrentPage - 1) * this.transactionItemsPerPage;
+  const end = start + this.transactionItemsPerPage;
+  this.paginatedTransactions = filtered.slice(start, end);
+}
   // Fetch Customers
-  loadCustomers() {
-    const customersUrl = `${this.siteUrl}/customers?consumer_key=${this.consumerKey}&consumer_secret=${this.consumerSecret}`;
-    this.http.get<any[]>(customersUrl).subscribe(res => {
-      this.customers = res;
-      this.totalCustomers = res.length;
-      this.totalPages = Math.ceil(this.totalCustomers / this.itemsPerPage);
-      this.updatePagedCustomers();
-    });
-  }
+  // loadCustomers() {
+  //   const customersUrl = `${this.siteUrl}/customers?consumer_key=${this.consumerKey}&consumer_secret=${this.consumerSecret}`;
+  //   this.http.get<any[]>(customersUrl).subscribe(res => {
+  //     this.customers = res;
+  //     this.totalCustomers = res.length;
+  //     this.totalPages = Math.ceil(this.totalCustomers / this.itemsPerPage);
+  //     this.updatePagedCustomers();
+  //   });
+  // }
+   loadCustomers() {
+  const customersUrl = `${this.siteUrl}/customers?consumer_key=${this.consumerKey}&consumer_secret=${this.consumerSecret}&per_page=100`;
+
+  this.http.get<any[]>(customersUrl).subscribe(res => {
+    console.log('Fetched customers:', res);
+    // Sort manually by creation date (latest first)
+    const sorted = res.sort((a, b) =>
+      new Date(b.date_created).getTime() - new Date(a.date_created).getTime()
+    );
+
+    // Take only the latest 5 customers
+    this.pagedCustomers = sorted.slice(0, 5);
+  });
+}
 
   // Handle deletion of a customer
   deleteCustomer(id: number): void {
@@ -206,7 +262,32 @@ export class SalesComponent implements OnInit {
       this.updatePagedCustomers();
     }
   }
+changeTransactionPage(step: number): void {
+  const newPage = this.transactionCurrentPage + step;
+  const maxPage = Math.ceil(this.filteredTransactions.length / this.transactionItemsPerPage);
+  if (newPage >= 1 && newPage <= maxPage) {
+    this.transactionCurrentPage = newPage;
+    this.updatePaginatedTransactions();
+  }
+}
 
+onSearchChange(): void {
+  this.transactionCurrentPage = 1;
+  this.updatePaginatedTransactions();
+}
+onTransactionLimitChange(): void {
+  this.transactionCurrentPage = 1;
+  this.updatePaginatedTransactions();
+}
+getTransactionRangeEnd(): number {
+  return Math.min(
+    this.transactionCurrentPage * this.transactionItemsPerPage,
+    this.filteredTransactions.length
+  );
+}
+get totalTransactionPages(): number {
+  return Math.ceil(this.filteredTransactions.length / this.transactionItemsPerPage);
+}
   // Show correct number of entries being displayed on current page
   get showingTo(): number {
     return Math.min(this.currentPage * this.itemsPerPage, this.totalCustomers);
