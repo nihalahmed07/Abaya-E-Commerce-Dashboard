@@ -81,17 +81,37 @@ export class OrdersDetailsComponent implements OnInit {
   }
 
   // Method to fetch order by ID
+  // loadOrder(id: string): void {
+  //   this.orderService.getOrder(id).subscribe({
+  //     next: (data) => {
+  //       this.order = data;
+  //       this.selectedStatus = data.status;  // Set initial status from the order data
+  //     },
+  //     error: (err) => {
+  //       console.error('Failed to fetch order details', err);
+  //     },
+  //   });
+  // }
   loadOrder(id: string): void {
-    this.orderService.getOrder(id).subscribe({
-      next: (data) => {
-        this.order = data;
-        this.selectedStatus = data.status;  // Set initial status from the order data
-      },
-      error: (err) => {
-        console.error('Failed to fetch order details', err);
-      },
-    });
-  }
+  this.orderService.getOrder(id).subscribe({
+    next: (data) => {
+      const shipping = data.shipping || {};
+      const isShippingEmpty = ['address_1', 'city', 'state', 'postcode', 'country'].every(
+        (field) => !shipping[field]?.trim()
+      );
+
+      if (isShippingEmpty) {
+        data.shipping = { ...data.billing };
+      }
+
+      this.order = data;
+      this.selectedStatus = data.status;
+    },
+    error: (err) => {
+      console.error('Failed to fetch order details', err);
+    }
+  });
+}
 
   // Method to update order status
   updateOrderStatus(): void {

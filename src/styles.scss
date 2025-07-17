@@ -6,3 +6,83 @@
 .sidebar li.sub {
   display: block !important;
 }
+@media print {
+  /* Hide the sidebar */
+  .sidebar.sidebar-wrapper {
+    display: none !important;
+  }
+
+  /* Optional: Hide other layout parts */
+  .navbar,
+  .footer,
+  .page-breadcrumb,
+  .app-header,
+  .print-hidden {
+    display: none !important;
+  }
+
+  /* Optional: Make main content full width */
+  .wrapper,
+  .main-content,
+  .content-wrapper ,
+  .page-content{
+    margin: 0 !important;
+    width: 100% !important;
+  }
+  
+.print-btns{
+    display: none!important;
+}
+.pdf-mode  {
+  display: flex !important;
+  flex-direction: column!important;
+
+}
+.orderdet {
+     -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background: #d2dcff!important;
+
+}
+.card-header.py-3 {
+         -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-color: #3461ff66;
+}
+table.striped-table tbody tr:nth-child(odd) {
+        -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-color: #aec0ff8f;
+}
+.switcher-body {
+    display: none!important;
+}
+.hecom {
+
+    margin-right: unset!important;
+}
+.trclrsback{
+  width: 100%;
+  -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-color: #aec0ff8f;
+}
+ .page-break {
+    page-break-before: always;
+  }
+// small, .small {
+//     -webkit-print-color-adjust: exact !important;
+//     print-color-adjust: exact !important;
+//     background-color: #aec0ff!important;
+//     padding: 4px 12px!important;
+//     font-weight: 600px!important;
+// }
+.wtch4{
+ -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-color: black;
+}
+
+}
+
+

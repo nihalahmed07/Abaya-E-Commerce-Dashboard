@@ -1,0 +1,83 @@
+table.striped-table tbody tr:nth-child(odd) {
+  background-color: #aec0ff8f;
+     
+}
+
+table.striped-table{
+     border: 1px solid #aec0ff8f;
+}
+
+.card-header.py-3  {
+    background-color: #3461ff66;
+}
+.btecom{
+        font-size: 20px;
+
+}
+table.striped-table thead th ,.clrss{
+    color :#1839ab
+}
+.hecom{
+    background: #d2dcff;
+    padding: 5px 13px;
+}
+.orderdet{
+ background: #d2dcff;
+    padding: 5px 13px;
+}
+.wtch1 , .wtch2, .wtch3,.wtch4{
+    max-width: 240px;
+    width: 100%;
+}
+.pdf-mode  {
+  display: flex !important;
+  flex-direction: column!important;
+
+}
+@media print {
+.pdf-mode  {
+  display: flex !important;
+  flex-direction: column!important;
+      width: 100%;
+
+}    
+}
+.pdf-mode {
+  /* Optional: White background for clean export */
+  background: #fff !important;
+  color: #000 !important;
+
+  /* Hide all buttons and interactive elements */
+  .print-btns,
+  .btn,
+  a {
+    display: none !important;
+  }
+
+  /* Optional: Adjust table font size or spacing */
+  table {
+    font-size: 12px !important;
+  }
+
+  /* Optional: Page padding for clean edges */
+  padding: 20px;
+
+  /* Force three-column layout for invoice header */
+  #prinds {
+    display: flex !important;
+ flex-direction: column!important;
+    justify-content: space-between;
+    gap: 16px;
+        width: 100%;
+
+    .col {
+  width: 100%;
+      max-width: 100% !important;
+    }
+  }
+
+  /* Optional: Center footer text */
+  .card-footer {
+    text-align: center !important;
+  }
+}

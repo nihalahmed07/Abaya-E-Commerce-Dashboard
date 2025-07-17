@@ -1,17 +1,26 @@
+
+<style>
+  p {
+    margin-bottom: 0;
+  }
+</style>
 <!--breadcrumb-->
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-	<div class="breadcrumb-title pe-3">Application</div>
-	<div class="ps-3">
-	  <nav aria-label="breadcrumb">
-		<ol class="breadcrumb mb-0 p-0">
-		  <li class="breadcrumb-item"><a href="#" (click)="$event.preventDefault()" ><i class="bx bx-home-alt"></i></a>
-		  </li>
-		  <li class="breadcrumb-item active" aria-current="page">Invoice</li>
-		</ol>
-	  </nav>
-	</div>
-	<div class="ms-auto">
-	  <!-- <div class="btn-group">
+  <div class="breadcrumb-title pe-3">Application</div>
+  <div class="ps-3">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0 p-0">
+        <li class="breadcrumb-item">
+          <a href="#" (click)="$event.preventDefault()"
+            ><i class="bx bx-home-alt"></i
+          ></a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Invoice</li>
+      </ol>
+    </nav>
+  </div>
+  <div class="ms-auto">
+    <!-- <div class="btn-group">
 		<button type="button" class="btn btn-primary">Settings</button>
 		<button type="button" class="btn btn-primary split-bg-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">	<span class="visually-hidden">Toggle Dropdown</span>
 		</button>
@@ -23,140 +32,415 @@
 			<a class="dropdown-item" href="#" (click)="$event.preventDefault()" >Separated link</a>
 		</div>
 	  </div> -->
-	</div>
   </div>
-  <!--end breadcrumb-->
-
-
+</div>
+<!--end breadcrumb-->
+<div id="print-section">
 <div class="card border shadow-none">
-   <div class="card-header py-3">
-		<div class="row align-items-center g-3">
-		  <div class="col-12 col-lg-6">
-			<h5 class="mb-0">Company Name, Inc</h5>
-		  </div>
-		  <div class="col-12 col-lg-6 text-md-end">
-			<a href="#" (click)="$event.preventDefault()"  class="btn btn-sm btn-danger me-2"><i class="bi bi-file-earmark-pdf-fill"></i> Export as PDF</a>
-			<a href="#" (click)="$event.preventDefault()"  onclick="window.print()" class="btn btn-sm btn-secondary"><i class="bi bi-printer-fill"></i> Print</a>
-		  </div>
-		</div>
-   </div>
-   <div class="card-header py-2 bg-light">
-	 <div class="row row-cols-1 row-cols-lg-3">
-	   <div class="col">
-		<div class="">
-		  <small>from</small>
-		  <address class="m-t-5 m-b-5">
-			 <strong class="text-inverse">Twitter, Inc.</strong><br>
-			 Street Address<br>
-			 City, Zip Code<br>
-			 Phone: (123) 456-7890<br>
-			 Fax: (123) 456-7890
-		  </address>
-		 </div>
-	   </div>
-	   <div class="col">
-		<div class="">
-		  <small>to</small>
-		  <address class="m-t-5 m-b-5">
-			 <strong class="text-inverse">Company Name</strong><br>
-			 Street Address<br>
-			 City, Zip Code<br>
-			 Phone: (123) 456-7890<br>
-			 Fax: (123) 456-7890
-		  </address>
-		 </div>
-	  </div>
-	  <div class="col">
-		<div class="">
-		  <small>Invoice / July period</small>
-		  <div class=""><b>August 3,2012</b></div>
-		  <div class="invoice-detail">
-			 #0000123DSS<br>
-			 Services Product
-		  </div>
-		</div>
-	  </div>
-	 </div>
-   </div>
+  <div class="card-header py-3">
+    <div class="row align-items-center g-3">
+      <div class="col-12 col-lg-6">
+        <h5 class="mb-0"><b>Burka Ecom, Inc</b></h5>
+      </div>
+      <div class="col-12 col-lg-6 text-md-end print-btns">
+        <!-- <a
+          href="#"
+          (click)="$event.preventDefault()"
+          class="btn btn-sm btn-danger me-2"
+          ><i class="bi bi-file-earmark-pdf-fill"></i> Export as PDF</a
+        > -->
+        <!-- <a
+          href="#"
+          (click)="$event.preventDefault()"
+          onclick="window.print()"
+          class="btn btn-sm btn-secondary"
+          ><i class="bi bi-printer-fill"></i> Print</a
+        > -->
+        <a href="#" (click)="printWithBrowser()" class="btn btn-sm btn-secondary">
+  <i class="bi bi-printer-fill"></i> Print
+</a>
+        <a (click)="printInvoice()" class="btn btn-sm btn-danger me-2">
+  <i class="bi bi-file-earmark-pdf-fill"></i> Export as PDF
+</a>
+      </div>
+    </div>
+  </div>
+  <!-- <pre>{{ order?.shipping | json }}</pre> -->
+  <div class="card-header py-2 bg-light">
+    <div class="row row-cols-1 row-cols-lg-3 " id="prinds">
+      <div class="col">
+        <div class="">
+          <!-- <address class="m-t-5 m-b-5">
+			<h5 class="mb-0">{{ order?.billing?.first_name }} {{ order?.billing?.last_name }}</h5>
+			<p> Email :{{ order?.billing?.email }}</p>
+		     	<p>{{ order?.line_items?.length }} items</p> -->
+          <!-- <p *ngIf="order?.billing?.phone"><span>Phone No</span> : {{ order.billing.phone }}</p>
+
+			<p>City: {{ order?.shipping?.city }}</p>
+<p>Address: {{ order?.shipping?.address_1 }}, {{ order?.shipping?.address_2 }}</p>
+<p>State: {{ order?.shipping?.state }}</p>
+<p>Postal Code: {{ order?.shipping?.postcode }}</p>
+<p>Country: {{ order?.shipping?.country }}</p>
+Since you already added this fallback logic in TypeScript, you n
+			
+		  </address> -->
+          <div>
+            <table style="width: 100%; border-collapse: collapse">
+              <tr class="trclrsback">
+                <td><small>From</small></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td
+                  style="
+                    width: 40%;
+                    color: #6c757d;
+                    text-transform: uppercase;
+                    font-size: 12px;
+                    letter-spacing: 0.5px;
+                  "
+                >
+                  Name
+                </td>
+                <td class="clrss" style="width: 60%">
+                  {{ order?.billing?.first_name }}
+                  {{ order?.billing?.last_name }}
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style="
+                    color: #6c757d;
+                    text-transform: uppercase;
+                    font-size: 12px;
+                    letter-spacing: 0.5px;
+                  "
+                >
+                  Email
+                </td>
+                <td>{{ order?.billing?.email }}</td>
+              </tr>
+              <tr *ngIf="order?.billing?.phone">
+                <td
+                  style="
+                    color: #6c757d;
+                    text-transform: uppercase;
+                    font-size: 12px;
+                    letter-spacing: 0.5px;
+                  "
+                >
+                  Phone No
+                </td>
+                <td>{{ order?.billing?.phone }}</td>
+              </tr>
+              <tr>
+                <td
+                  style="
+                    color: #6c757d;
+                    text-transform: uppercase;
+                    font-size: 12px;
+                    letter-spacing: 0.5px;
+                  "
+                >
+                  City
+                </td>
+                <td>{{ order?.shipping?.city || order?.billing?.city }}</td>
+              </tr>
+              <tr>
+                <td
+                  style="
+                    color: #6c757d;
+                    text-transform: uppercase;
+                    font-size: 12px;
+                    letter-spacing: 0.5px;
+                  "
+                >
+                  Address
+                </td>
+                <td>
+                  {{ order?.shipping?.address_1 || order?.billing?.address_1 }},
+                  {{ order?.shipping?.address_2 || order?.billing?.address_2 }}
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style="
+                    color: #6c757d;
+                    text-transform: uppercase;
+                    font-size: 12px;
+                    letter-spacing: 0.5px;
+                  "
+                >
+                  State
+                </td>
+                <td>{{ order?.shipping?.state || order?.billing?.state }}</td>
+              </tr>
+              <tr>
+                <td
+                  style="
+                    color: #6c757d;
+                    text-transform: uppercase;
+                    font-size: 12px;
+                    letter-spacing: 0.5px;
+                  "
+                >
+                  Postal Code
+                </td>
+                <td>
+                  {{ order?.shipping?.postcode || order?.billing?.postcode }}
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style="
+                    color: #6c757d;
+                    text-transform: uppercase;
+                    font-size: 12px;
+                    letter-spacing: 0.5px;
+                  "
+                >
+                  Country
+                </td>
+                <td>
+                  {{ order?.shipping?.country || order?.billing?.country }}
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="">
+          <table style="width: 100%; border-collapse: collapse">
+            <tr class="trclrsback">
+              <td><small>To</small></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td
+                style="
+                  width: 40%;
+                  color: #6c757d;
+                  text-transform: uppercase;
+                  font-size: 12px;
+                  letter-spacing: 0.5px;
+                "
+              >
+                Company Name
+              </td>
+              <td style="width: 60%">Ecom Burga</td>
+            </tr>
+            <tr>
+              <td
+                style="
+                  color: #6c757d;
+                  text-transform: uppercase;
+                  font-size: 12px;
+                  letter-spacing: 0.5px;
+                "
+              >
+                Street Address
+              </td>
+              <td>Burga Street, Business Bay</td>
+            </tr>
+            <tr>
+              <td
+                style="
+                  color: #6c757d;
+                  text-transform: uppercase;
+                  font-size: 12px;
+                  letter-spacing: 0.5px;
+                "
+              >
+                City, Zip Code
+              </td>
+              <td>Dubai, 00000</td>
+            </tr>
+            <tr>
+              <td
+                style="
+                  color: #6c757d;
+                  text-transform: uppercase;
+                  font-size: 12px;
+                  letter-spacing: 0.5px;
+                "
+              >
+                Phone
+              </td>
+              <td>+971 4 123 4567</td>
+            </tr>
+            <tr>
+              <td
+                style="
+                  color: #6c757d;
+                  text-transform: uppercase;
+                  font-size: 12px;
+                  letter-spacing: 0.5px;
+                "
+              >
+                Fax
+              </td>
+              <td>+971 4 765 4321</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="col">
+        <div class="orderdet">
+          <table
+            style="width: 100%; border-collapse: collapse; font-size: 14px"
+          >
+            <tr>
+              <td style="width: 40%; color: #6c757d; text-transform: uppercase">
+                Invoice Period
+              </td>
+              <td style="width: 60%">
+                {{ order?.date_created | date : "LLLL" }} Period
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 40%; color: #6c757d; text-transform: uppercase">
+                Order ID
+              </td>
+              <td style="width: 60%">
+                <b>#{{ order?.id }}</b>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 40%; color: #6c757d; text-transform: uppercase">
+                Full Date
+              </td>
+              <td style="width: 60%">
+                {{ order?.date_created | date : "MMMM d, y" }}
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 40%; color: #6c757d; text-transform: uppercase">
+                Short Date
+              </td>
+              <td style="width: 60%">
+                {{ order?.date_created | date : "short" }}
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="card-body">
-	<div class="table-responsive">
-	  <table class="table table-invoice">
-		 <thead>
-			<tr>
-			   <th>TASK DESCRIPTION</th>
-			   <th class="text-center" width="10%">RATE</th>
-			   <th class="text-center" width="10%">HOURS</th>
-			   <th class="text-right" width="20%">LINE TOTAL</th>
-			</tr>
-		 </thead>
-		 <tbody>
-			<tr>
-			   <td>
-				  <span class="text-inverse">Website design &amp; development</span><br>
-				  <small>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed id sagittis arcu.</small>
-			   </td>
-			   <td class="text-center">$50.00</td>
-			   <td class="text-center">50</td>
-			   <td class="text-right">$2,500.00</td>
-			</tr>
-			<tr>
-			   <td>
-				  <span class="text-inverse">Branding</span><br>
-				  <small>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed id sagittis arcu.</small>
-			   </td>
-			   <td class="text-center">$50.00</td>
-			   <td class="text-center">40</td>
-			   <td class="text-right">$2,000.00</td>
-			</tr>
-			<tr>
-			   <td>
-				  <span class="text-inverse">Redesign Service</span><br>
-				  <small>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed id sagittis arcu.</small>
-			   </td>
-			   <td class="text-center">$50.00</td>
-			   <td class="text-center">50</td>
-			   <td class="text-right">$2,500.00</td>
-			</tr>
-		 </tbody>
-	  </table>
-   </div>
+    <div class="table-responsive">
+      <table class="table-invoice striped-table table">
+        <thead>
+          <tr>
+            <th>TASK DESCRIPTION</th>
+            <th class="text-center" width="10%">RATE</th>
+            <th class="text-center" width="10%">QUANTITY</th>
+            <th class="text-right" width="20%">LINE TOTAL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of order?.line_items">
+            <td>{{ item?.name }}</td>
+            <td>${{ item?.price }}</td>
+            <td>{{ item?.quantity }}</td>
+            <td>${{ item?.total }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-   <div class="row bg-light align-items-center m-0">
-	 <div class="col col-auto p-4">
-		<p class="mb-0">SUBTOTAL</p>
-		<h4 class="mb-0">$4,500.00</h4>
-	 </div>
-	 <div class="col col-auto p-4">
-		<i class="bi bi-plus-lg text-muted"></i>
-	 </div>
-	 <div class="col col-auto me-auto p-4">
-		<p class="mb-0">PAYPAL FEE (5.4%)</p>
-		<h4 class="mb-0">$108.00</h4>
-	 </div>
-	 <div class="col bg-dark col-auto p-4">
-	  <p class="mb-0 text-white">TOTAL</p>
-	  <h4 class="mb-0 text-white">$4508.00</h4>
-	 </div>
-   </div><!--end row-->
+    <div class="row bg-light align-items-center m-0 "  >
+      <table>
+        <tr>
+          <td>
+            <div class="col col-auto hecom wtch1">
+              <strong>SUBTOTAL:</strong>
+              <span class="btecom">
+                ${{ order?.total | number : "1.2-2" }}
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="col col-auto p-4 wtch2">
+              <i class="bi bi-plus-lg text-muted"></i>
+            </div>
+          </td>
+          <td>
+            <div class="col col-auto me-auto hecom wtch3">
+              <div>
+                <strong>PAYPAL FEE (5.4%):</strong>
+                <span class="btecom">
+                  ${{ order?.total * 0.054 | number : "1.2-2" }}
+                </span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="col bg-dark col-auto p-4 text-white wtch4">
+              <strong>TOTAL:</strong>
+              <span class="btecom">${{ order?.total | number : "1.2-2" }}</span>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <!--end row-->
 
-   <hr>
- <!-- begin invoice-note -->
- <div class="my-3">
-  * Make all cheques payable to [Your Company Name]<br>
-  * Payment is due within 30 days<br>
-  * If you have any questions concerning this invoice, contact  [Name, Phone Number, Email]
- </div>
-<!-- end invoice-note -->
+    <hr />
+    <!-- begin invoice-note -->
+    <div class="my-3" [ngClass]="{ 'page-break': order?.line_items?.length > 2 }">
+      <table>
+       <tr>
+        <td>
+     * Make all cheques payable to ECOM BURGA
+        </td>
+       </tr>
+         <tr>
+        <td>
+           * Payment is due within 30 days
+        </td>
+       </tr>
+         <tr>
+        <td>
+           * If you have any questions concerning this invoice, contact [Name, Phone
+      Number, Email]
+        </td>
+       </tr>
+      </table>
+ 
+     
+     
+    </div>
+    <!-- end invoice-note -->
   </div>
 
-  <div class="card-footer py-3">
-	  <p class="text-center mb-2">
-		 THANK YOU FOR YOUR BUSINESS
-	  </p>
-	  <p class="text-center d-flex align-items-center gap-3 justify-content-center mb-0">
-		 <span class=""><i class="bi bi-globe"></i> www.domain.com</span>
-		 <span class=""><i class="bi bi-telephone-fill"></i> T:+11-0462879</span>
-		 <span class=""><i class="bi bi-envelope-fill"></i> info@example.com</span>
-	  </p>
+ <div
+  class="card-footer py-3"
+ 
+>
+
+    <table class="text-center d-flex   flex-column align-items-center gap-3 justify-content-center mb-0" >
+      <tr>
+        <td>
+ <p class="text-center mb-2">THANK YOU FOR YOUR BUSINESS</p>
+        </td>
+      </tr>
+      <tr  class="text-center d-flex align-items-center gap-3 justify-content-center mb-0">
+        <td>
+ <span class=""
+        ><i class="bi bi-globe"></i> https://cybercloudapp.com/</span
+      >
+        </td>
+        <td>
+ <span class=""><i class="bi bi-telephone-fill"></i> T:+11-0462879</span>
+        </td>
+        <td>
+  <span class=""><i class="bi bi-envelope-fill"></i> info@example.com</span>
+        </td>
+      </tr>
+    </table>
+   
+ 
   </div>
- </div>
+</div>
+</div>
