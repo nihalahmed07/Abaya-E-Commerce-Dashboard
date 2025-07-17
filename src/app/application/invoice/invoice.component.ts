@@ -18,7 +18,7 @@ export class InvoiceComponent implements OnInit {
   import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { OrderService } from 'src/app/services/order.service';
-import html2pdf from 'html2pdf.js';
+// import html2pdf from 'html2pdf.js';
 
 @Component({
   selector: 'app-invoice',
@@ -96,13 +96,13 @@ printInvoice(): void {
 
    element.classList.add('pdf-mode');
 
-  html2pdf()
-    .set(options)
-    .from(element)
-    .save()
-    .finally(() => {
-      element.classList.remove('pdf-mode');
-    });
+  // html2pdf()
+  //   .set(options)
+  //   .from(element)
+  //   .save()
+  //   .finally(() => {
+  //     element.classList.remove('pdf-mode');
+  //   });
 }
 
 printWithBrowser(): void {
