@@ -22,7 +22,7 @@ const routes: Routes = [
     redirectTo: 'dashboard/sales',
     pathMatch: 'full',
   },
-  {
+   {
     path: '',
     component: FullLayoutComponent,
     data: { title: 'full Views' },
@@ -38,14 +38,13 @@ const routes: Routes = [
       }
     ]
   },
-
   // { path: '', component: FullLayoutComponent, data: { title: 'full Views' }, children: Full_ROUTES },
   { path: '', component: ContentLayoutComponent, data: { title: 'content Views' }, children: CONTENT_ROUTES },
   // Sign Up and Sign In Routes
   { path: 'signup-with-header-footer', component: SignupWithHeaderFooterComponent },
   { path: 'signin-with-header-footer', component: SigninWithHeaderFooterComponent },
 
-  // { path: '**', redirectTo: 'auth/signup-with-header-footer' },
+  { path: '**', redirectTo: 'auth/signup-with-header-footer' },
 
 
   { 
@@ -56,12 +55,8 @@ const routes: Routes = [
   //   path: 'invoice/:id', 
   //   component: InvoiceComponent 
   // },
-   { path: 'application/invoice/:id',
-     component: InvoiceComponent },  // Ensure this is correct
-
     { path: '**', redirectTo: 'auth/signup-with-header-footer' },
-     { path: 'application/invoice/:id', component: InvoiceComponent },  // Ensure this is correct
-
+   { path: 'application/invoice/:id', component: InvoiceComponent },  // Ensure this is correct
 ];
 
 @NgModule({
