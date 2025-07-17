@@ -1,17 +1,20 @@
 <!--breadcrumb-->
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-	<div class="breadcrumb-title pe-3">eCommerce</div>
-	<div class="ps-3">
-		<nav aria-label="breadcrumb">
-			<ol class="breadcrumb mb-0 p-0">
-				<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
-				</li>
-				<li class="breadcrumb-item active" aria-current="page">Add New Product</li>
-			</ol>
-		</nav>
-	</div>
-	<div class="ms-auto">
-		<!-- <div class="btn-group">
+  <div class="breadcrumb-title pe-3">eCommerce</div>
+  <div class="ps-3">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0 p-0">
+        <li class="breadcrumb-item">
+          <a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          Add New Product
+        </li>
+      </ol>
+    </nav>
+  </div>
+  <div class="ms-auto">
+    <!-- <div class="btn-group">
 			<button type="button" class="btn btn-primary">Settings</button>
 			<button type="button" class="btn btn-primary split-bg-primary dropdown-toggle dropdown-toggle-split"
 				data-bs-toggle="dropdown"> <span class="visually-hidden">Toggle Dropdown</span>
@@ -23,173 +26,236 @@
 				<div class="dropdown-divider"></div> <a class="dropdown-item" href="javascript:;">Separated link</a>
 			</div>
 		</div> -->
-	</div>
+  </div>
 </div>
 <!--end breadcrumb-->
 <div class="row">
-	<div class="col-lg-12 mx-auto">
-		<div class="card">
-			<div class="card-header py-3 bg-transparent">
-				<div class="d-sm-flex align-items-center">
-					<h5 class="mb-2 mb-sm-0">{{ isEditMode ? 'Edit Product' : 'Add New Product' }}</h5>
+  <div class="col-lg-12 mx-auto">
+    <div class="card">
+      <div class="card-header py-3 bg-transparent">
+        <div class="d-sm-flex align-items-center">
+          <h5 class="mb-2 mb-sm-0">
+            {{ isEditMode ? "Edit Product" : "Add New Product" }}
+          </h5>
 
-
-					<div class="ms-auto">
-						<button type="button" class="btn btn-secondary me-2">Save to Draft</button>
-						<!-- <button type="button" class="btn btn-primary">Publish Now</button> -->
-						 <!-- <button type="button" class="btn btn-primary" (click)="publishProduct()">Publish Now</button> -->
-						 <button type="button" class="btn btn-primary" [disabled]="isLoading" (click)="publishProduct()">
+          <div class="ms-auto">
+            <button type="button" class="btn btn-secondary me-2">
+              Save to Draft
+            </button>
+            <!-- <button type="button" class="btn btn-primary">Publish Now</button> -->
+            <!-- <button type="button" class="btn btn-primary" (click)="publishProduct()">Publish Now</button> -->
+            <!-- <button type="button" class="btn btn-primary" [disabled]="isLoading" (click)="publishProduct()">
   <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1"></span>
   {{ isLoading ? 'Publishing...' : 'Publish Now' }}
-</button>
-
-
-					</div>
-				</div>
-			</div>
-			<div class="card-body">
-				<div class="row g-3">
-					<div class="col-12 col-lg-8">
-						<div class="card shadow-none bg-light border">
-							<div class="card-body">
-								<form class="row g-3">
-									<div class="col-12">
-										<label class="form-label">Product title</label>
-										<!-- <input type="text" class="form-control" placeholder="Product title"> -->
-										<input type="text" class="form-control" placeholder="Product title"
-											[(ngModel)]="product.name" name="productName" required />
-
-									</div>
-									<div class="col-12 col-lg-4">
-										<label class="form-label">SKU</label>
-										<!-- <input type="text" class="form-control" placeholder="SKU"> -->
-										<input type="text" class="form-control" placeholder="SKU"
-											[(ngModel)]="product.sku" name="sku" />
-
-									</div>
-									<div class="col-12 col-lg-4">
-										<label class="form-label">Color</label>
-										<!-- <input type="text" class="form-control" placeholder="Color"> -->
-										<input type="text" class="form-control" placeholder="Color"
-											[(ngModel)]="product.color" name="color" />
-
-									</div>
-									<div class="col-12 col-lg-4">
-										<label class="form-label">Size</label>
-										<!-- <input type="text" class="form-control" placeholder="Size"> -->
-										<input type="text" class="form-control" placeholder="Size"
-											[(ngModel)]="product.size" name="size" />
-
-									</div>
-									<div class="col-12">
-										<label class="form-label">Brand</label>
-										<!-- <input type="text" class="form-control" placeholder="Brand"> -->
-										<input type="text" class="form-control" placeholder="Brand"
-											[(ngModel)]="product.brand" name="brand" />
-
-									</div>
-									<div class="col-12">
-										<label class="form-label">Images</label>
-										<!-- <input class="form-control" type="file"> -->
-										 <input class="form-control" type="file" (change)="handleImageUpload($event)" />
-
-									</div>
-									<div class="col-12">
-										<label class="form-label">Full description</label>
-										<!-- <textarea class="form-control" placeholder="Full description" rows="4" cols="4"></textarea> -->
-										<textarea class="form-control" placeholder="Full description"
-											[(ngModel)]="product.description" name="description" rows="4"
-											cols="4"></textarea>
-
-									</div>
-								</form>
-							</div>
-						</div>
-					</div>
-					<div class="col-12 col-lg-4">
-						<div class="card shadow-none bg-light border">
-							<div class="card-body">
-								<div class="row g-3">
-									<div class="col-12">
-										<label class="form-label">Price</label>
-										<!-- <input type="text" class="form-control" placeholder="Price"> -->
-										<input type="text" class="form-control" placeholder="Price"
-											[(ngModel)]="product.price" name="price" />
-
-									</div>
-									<div class="col-12">
-										<label class="form-label">Status</label>
-										<!-- <select class="form-select">
+</button> -->
+            <button
+              type="button"
+              class="btn btn-primary"
+              [disabled]="isLoading"
+              (click)="uploadImageAndPublish()"
+            >
+              <span
+                *ngIf="isLoading"
+                class="spinner-border spinner-border-sm me-1"
+              ></span>
+              {{ isLoading ? "Publishing..." : "Publish Now" }}
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-12 col-lg-8">
+            <div class="card shadow-none bg-light border">
+              <div class="card-body">
+                <form class="row g-3">
+                  <div class="col-12">
+                    <label class="form-label">Product title</label>
+                    <!-- <input type="text" class="form-control" placeholder="Product title"> -->
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Product title"
+                      [(ngModel)]="product.name"
+                      name="productName"
+                      required
+                    />
+                  </div>
+                  <div class="col-12 col-lg-4">
+                    <label class="form-label">SKU</label>
+                    <!-- <input type="text" class="form-control" placeholder="SKU"> -->
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="SKU"
+                      [(ngModel)]="product.sku"
+                      name="sku"
+                    />
+                  </div>
+                  <div class="col-12 col-lg-4">
+                    <label class="form-label">Color</label>
+                    <!-- <input type="text" class="form-control" placeholder="Color"> -->
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Color"
+                      [(ngModel)]="product.color"
+                      name="color"
+                    />
+                  </div>
+                  <div class="col-12 col-lg-4">
+                    <label class="form-label">Size</label>
+                    <!-- <input type="text" class="form-control" placeholder="Size"> -->
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Size"
+                      [(ngModel)]="product.size"
+                      name="size"
+                    />
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Brand</label>
+                    <!-- <input type="text" class="form-control" placeholder="Brand"> -->
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Brand"
+                      [(ngModel)]="product.brand"
+                      name="brand"
+                    />
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Images</label>
+                    <!-- <input class="form-control" type="file"> -->
+                    <input
+                      class="form-control"
+                      type="file"
+                      (change)="handleImageUpload($event)"
+                    />
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Full description</label>
+                    <!-- <textarea class="form-control" placeholder="Full description" rows="4" cols="4"></textarea> -->
+                    <textarea
+                      class="form-control"
+                      placeholder="Full description"
+                      [(ngModel)]="product.description"
+                      name="description"
+                      rows="4"
+                      cols="4"
+                    ></textarea>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-lg-4">
+            <div class="card shadow-none bg-light border">
+              <div class="card-body">
+                <div class="row g-3">
+                  <div class="col-12">
+                    <label class="form-label">Price</label>
+                    <!-- <input type="text" class="form-control" placeholder="Price"> -->
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Price"
+                      [(ngModel)]="product.price"
+                      name="price"
+                    />
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Status</label>
+                    <!-- <select class="form-select">
 											<option>Published</option>
 											<option>Draft</option>
 										</select> -->
-										<select class="form-select" [(ngModel)]="product.status" name="status">
-											<option value="publish">Published</option>
-											<option value="draft">Draft</option>
-										</select>
+                    <select
+                      class="form-select"
+                      [(ngModel)]="product.status"
+                      name="status"
+                    >
+                      <option value="publish">Published</option>
+                      <option value="draft">Draft</option>
+                    </select>
+                  </div>
+                  <div class="col-12">
+                    <!-- <label class="form-label">Tags</label> -->
+                    <!-- <input type="text" class="form-control" placeholder="Tags"> -->
+                    <!-- <input type="text" class="form-control" placeholder="Tags"
+											[(ngModel)]="product.tags" name="tags" /> -->
+                    <div class="mb-3">
+                      <label class="form-label">Tags</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Add a tag and press Enter"
+                        [(ngModel)]="newTag"
+                        (keyup.enter)="addTag()"
+                      />
+                    </div>
 
-									</div>
-									<div class="col-12">
-										<label class="form-label">Tags</label>
-										<!-- <input type="text" class="form-control" placeholder="Tags"> -->
-										<input type="text" class="form-control" placeholder="Tags"
-											[(ngModel)]="product.tags" name="tags" />
-
-									</div>
-									<div class="col-12">
-										<div class="d-flex align-items-center gap-2"> <a href="javascript:;"
-												class="btn btn-sm btn-light border shadow-sm bg-white">Woman <i
-													class="bi bi-x"></i></a>
-											<a href="javascript:;"
-												class="btn btn-sm btn-light border shadow-sm bg-white">Fashion <i
-													class="bi bi-x"></i></a>
-											<a href="javascript:;"
-												class="btn btn-sm btn-light border shadow-sm bg-white">Furniture <i
-													class="bi bi-x"></i></a>
-										</div>
-									</div>
-									<div class="col-12">
-										<h5>Categories</h5>
-										<div class="category-list">
-											<div class="form-check">
-												<input class="form-check-input" type="checkbox" value="" id="Jeans">
-												<label class="form-check-label" for="Jeans">Jeans</label>
-											</div>
-											<div class="form-check">
-												<input class="form-check-input" type="checkbox" value=""
-													id="FormalShirts">
-												<label class="form-check-label" for="FormalShirts">Formal Shirts</label>
-											</div>
-											<div class="form-check">
-												<input class="form-check-input" type="checkbox" value=""
-													id="WomenShirts">
-												<label class="form-check-label" for="WomenShirts">Women Shirts</label>
-											</div>
-											<div class="form-check">
-												<input class="form-check-input" type="checkbox" value=""
-													id="Electronics">
-												<label class="form-check-label" for="Electronics">Electronics</label>
-											</div>
-											<div class="form-check">
-												<input class="form-check-input" type="checkbox" value=""
-													id="SportsShoes">
-												<label class="form-check-label" for="SportsShoes">Sports Shoes</label>
-											</div>
-											<div class="form-check">
-												<input class="form-check-input" type="checkbox" value="" id="Mobiles">
-												<label class="form-check-label" for="Mobiles">Mobiles</label>
-											</div>
-										</div>
-									</div>
-								</div>
-								<!--end row-->
-							</div>
-						</div>
-					</div>
-				</div>
-				<!--end row-->
-			</div>
-		</div>
-	</div>
+                    <!-- Tags Display -->
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                      <a
+                        *ngFor="let tag of product.tags"
+                        href="javascript:;"
+                        class="btn btn-sm btn-light border shadow-sm bg-white"
+                      >
+                        {{ tag }}
+                        <i class="bi bi-x ms-1" (click)="removeTag(tag)"></i>
+                      </a>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <!-- <div class="d-flex align-items-center gap-2">
+                      <a
+                        href="javascript:;"
+                        class="btn btn-sm btn-light border shadow-sm bg-white"
+                        >Woman <i class="bi bi-x"></i
+                      ></a>
+                      <a
+                        href="javascript:;"
+                        class="btn btn-sm btn-light border shadow-sm bg-white"
+                        >Fashion <i class="bi bi-x"></i
+                      ></a>
+                      <a
+                        href="javascript:;"
+                        class="btn btn-sm btn-light border shadow-sm bg-white"
+                        >Furniture <i class="bi bi-x"></i
+                      ></a>
+                    </div> -->
+                  </div>
+                  <div class="col-12">
+                    <h5>Categories</h5>
+                    <div class="category-list">
+                    
+                     <div *ngFor="let cat of categoriesList" class="form-check">
+  <input
+    type="checkbox"
+    class="form-check-input"
+    [id]="'cat-' + cat.id"
+    [value]="cat.id"
+    [checked]="product.categories.includes(cat.id)"
+    (change)="toggleCategory(cat.id, $event.target.checked)"
+  />
+  <label class="form-check-label" [for]="'cat-' + cat.id">
+    {{ cat.name }}
+  </label>
+</div>
+                   
+                    </div>
+                  </div>
+                </div>
+                <!--end row-->
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--end row-->
+      </div>
+    </div>
+  </div>
 </div>
 <!--end row-->
