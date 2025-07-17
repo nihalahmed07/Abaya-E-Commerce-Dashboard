@@ -185,6 +185,17 @@
                     <!-- <input type="text" class="form-control" placeholder="Tags"> -->
                     <!-- <input type="text" class="form-control" placeholder="Tags"
 											[(ngModel)]="product.tags" name="tags" /> -->
+											  <!-- Tags Display -->
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                      <a
+                        *ngFor="let tag of product.tags"
+                        href="javascript:;"
+                        class="btn btn-sm btn-light border shadow-sm bg-white"
+                      >
+                        {{ tag }}
+                        <i class="bi bi-x ms-1" (click)="removeTag(tag)"></i>
+                      </a>
+                    </div>
                     <div class="mb-3">
                       <label class="form-label">Tags</label>
                       <input
@@ -196,19 +207,19 @@
                       />
                     </div>
 
-                    <!-- Tags Display -->
-                    <div class="d-flex align-items-center gap-2 flex-wrap">
-                      <a
-                        *ngFor="let tag of product.tags"
-                        href="javascript:;"
-                        class="btn btn-sm btn-light border shadow-sm bg-white"
-                      >
-                        {{ tag }}
-                        <i class="bi bi-x ms-1" (click)="removeTag(tag)"></i>
-                      </a>
-                    </div>
+                  
                   </div>
                   <div class="col-12">
+					<div class="d-flex align-items-center gap-2 flex-wrap">
+  <ng-container *ngFor="let cat of categoriesList">
+    <ng-container *ngIf="product.categories.includes(cat.id)">
+      <a href="javascript:;" class="btn btn-sm btn-light border shadow-sm bg-white">
+        {{ cat.name }}
+        <i class="bi bi-x ms-1" (click)="removeCategory(cat.id)"></i>
+      </a>
+    </ng-container>
+  </ng-container>
+</div>	
                     <!-- <div class="d-flex align-items-center gap-2">
                       <a
                         href="javascript:;"
