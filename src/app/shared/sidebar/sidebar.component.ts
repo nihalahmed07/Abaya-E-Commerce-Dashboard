@@ -29,7 +29,7 @@ export class SidebarComponent implements OnInit {
 
             if (event instanceof NavigationEnd && $(window).width() < 1025 && ( document.readyState == 'complete' || false ) ) {
 
-                this.toggleSidebar();
+                // this.toggleSidebar();
                 // Hide loading indicator
                
             }

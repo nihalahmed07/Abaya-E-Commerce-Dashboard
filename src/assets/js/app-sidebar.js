@@ -5,28 +5,34 @@ $(document).ready(function () {
 	if (!$wrapper.hasClass('toggled')) {
 		$sidebar_content.find('li.active').parents('li').addClass('open');
 	}
-	$sidebar_content.on('click', '.navigation li a', function () {
-		var $this = $(this),
-			listItem = $this.parent('li');
-		if (listItem.hasClass('sub') && listItem.hasClass('open')) {
-			collapse(listItem);
-		} else {
-			if (listItem.hasClass('sub')) {
-				expand(listItem);
-			}
-			// If menu collapsible then do not take any action
-			if ($sidebar_content.data('collapsible')) {
-				return false;
-			}
-			// If menu accordion then close all except clicked once
-			else {
-				openListItems = listItem.siblings('.open');
-				collapse(openListItems);
-				listItem.siblings('.open').find('li.open').removeClass('open');
-			}
-		}
-	});
+	// $sidebar_content.on('click', '.navigation li a', function () {
+	// 	var $this = $(this),
+	// 		listItem = $this.parent('li');
+	// 	if (listItem.hasClass('sub') && listItem.hasClass('open')) {
+	// 		collapse(listItem);
+	// 	} else {
+	// 		if (listItem.hasClass('sub')) {
+	// 			expand(listItem);
+	// 		}
+	// 		// If menu collapsible then do not take any action
+	// 		if ($sidebar_content.data('collapsible')) {
+	// 			return false;
+	// 		}
+	// 		// If menu accordion then close all except clicked once
+	// 		else {
+	// 			openListItems = listItem.siblings('.open');
+	// 			collapse(openListItems);
+	// 			listItem.siblings('.open').find('li.open').removeClass('open');
+	// 		}
+	// 	}
+	// });
+	$sidebar_content.find('li.sub').each(function () {
+	$(this).addClass('open');           // Keep all submenus open
+	$(this).children('ul').show();      // Ensure they’re visible
+});
 
+// Disable any collapse on click
+$sidebar_content.off('click', '.navigation li a');
 	function collapse($listItem, callback) {
 		var $subList = $listItem.children('ul');
 		$subList.show().slideUp(300, function () {
