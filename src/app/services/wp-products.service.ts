@@ -37,11 +37,16 @@ export class WpProductsService {
 
 
   // Get single product
+// getProduct(id: number): Observable<any> {
+//   const params = this.authParams();
+//   return this.http.get(`${this.baseUrl}/${id}`, { params });
+// }
 getProduct(id: number): Observable<any> {
-  const params = this.authParams();
+  const params = this.authParams()
+    .set('_fields', 'id,name,sku,regular_price,description,status,categories,tags,images,meta_data');
+
   return this.http.get(`${this.baseUrl}/${id}`, { params });
 }
-
 // Update product
 updateProduct(id: number, data: any): Observable<any> {
   const params = this.authParams();
@@ -101,6 +106,14 @@ uploadImage(file: File): Observable<any> {
 }
 
 
+getTagsByIds(ids: number[]): Observable<any[]> {
+  const params = new HttpParams()
+    .set('consumer_key', this.consumerKey)
+    .set('consumer_secret', this.consumerSecret)
+    .set('include', ids.join(','));
+
+  return this.http.get<any[]>('https://cybercloudapp.com/wp-json/wc/v3/products/tags', { params });
+}
 
 
 }
