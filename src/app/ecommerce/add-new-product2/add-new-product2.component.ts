@@ -99,6 +99,7 @@ brand: string = '';
   
   tags: [] as string[],
     categories: [] as number[],
+      sizes: [] as string[],
    
     
     image: null
@@ -201,6 +202,33 @@ loadProduct(id: number) {
 }
 
 
+predefinedSizes: string[] = ['S', 'M', 'L', 'XL', 'XXL'];
+customSize: string = '';
+
+
+
+toggleSize(size: string) {
+  const index = this.product.sizes.indexOf(size);
+  if (index > -1) {
+    this.product.sizes.splice(index, 1); // remove
+  } else {
+    this.product.sizes.push(size); // add
+  }
+}
+
+addCustomSize() {
+  const size = this.customSize.trim();
+  if (size && !this.product.sizes.includes(size)) {
+    this.product.sizes.push(size);
+  }
+  this.customSize = '';
+}
+
+removeSize(size: string) {
+  this.product.sizes = this.product.sizes.filter(s => s !== size);
+}
+
+
 getMetaValue(metaData: any[], key: string): string {
   if (!Array.isArray(metaData)) return '';
   const found = metaData.find(meta => meta.key.toLowerCase() === key.toLowerCase());
@@ -280,22 +308,30 @@ removeTag(tag: string) {
 publishProduct() {
   const payload: any = {
     name: this.product.name,
-    type: 'simple',
+    type: 'variable',
     regular_price: (this.product.price ?? '').toString(),
     status: this.product.status,
-    sku: this.product.sku,
+    // sku: this.product.sku,
     description: this.product.description,
-    short_description: `${this.product.brand} - ${this.product.color} - ${this.product.size}`,
+    // short_description: `${this.product.brand} - ${this.product.color} - `,
     tags: this.product.tags
       .map((tag: string) => tag.trim())
       .filter((tag: string) => tag.length > 0)
       .map((tag: string) => ({ name: tag })),
     categories: this.product.categories.map((id: number) => ({ id })),
+    short_description: `${this.product.brand} - ${this.product.color} - Sizes: ${this.product.sizes.join(', ')}`,
+
+attributes: [
+  {
+    name: 'Size',
+    variation: true,
+    visible: true,
+    options: this.product.sizes
+  }],
     meta_data: [
-      { key: 'color', value: this.product.color },
-      { key: 'size', value: this.product.size },
-      { key: 'brand', value: this.product.brand }
-    ]
+  { key: 'color', value: this.product.color },
+  { key: 'brand', value: this.product.brand }
+]
   };
 
   if (this.product.image?.id) {

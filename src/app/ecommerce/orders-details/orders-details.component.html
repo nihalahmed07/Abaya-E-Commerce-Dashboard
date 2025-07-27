@@ -275,7 +275,26 @@
 							</div>
 						</div>
 					</div>
+					
+					<div class="card border shadow-none radius-10">
+						<div class="card-body">
+							<div class="d-flex align-items-center gap-3">
+								<div class="icon-box bg-light-warning border-0">
+									<i class="bi bi-cart text-warning"></i>
+								</div>
+								<div class="info">
+									<h6 class="mb-2">Order Details</h6>
+									<p class="mb-1"><strong>Shipping</strong>: {{ order?.shipping?.method || 'Billing
+										address used for shipping' }}</p>
+									<p class="mb-1"><strong>Payment Method</strong>: {{ order?.payment_method }}</p>
+									<p class="mb-1"><strong>Status</strong>: {{ order?.status | titlecase }}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				
 				</div>
+				
 
 				<!-- Order Info -->
 				<div class="col">
@@ -323,6 +342,8 @@
 						</div>
 					</div>
 				</div>
+
+				
 			</div>
 
 			<!-- Products Table -->

@@ -89,13 +89,45 @@
 											class="form-control" />
 									</div>
 
+									<div class="col-12 col-lg-4">
+  <label class="form-label">Sizes</label>
 
-									<div class="col-12">
+  <div class="d-flex flex-wrap gap-2 mb-2">
+    <button
+      type="button"
+      class="btn btn-outline-primary"
+      *ngFor="let sz of predefinedSizes"
+      [class.active]="product.sizes.includes(sz)"
+      (click)="toggleSize(sz)"
+    >
+      {{ sz }}
+    </button>
+  </div>
+
+  <input
+    type="text"
+    class="form-control mt-2"
+    placeholder="Add custom size and press Enter"
+    [(ngModel)]="customSize"
+    (keyup.enter)="addCustomSize()"
+  />
+
+  <div class="mt-2 d-flex gap-1 flex-wrap">
+    <span class="badge bg-secondary" *ngFor="let size of product.sizes">
+      {{ size }}
+      <i class="bi bi-x ms-1" (click)="removeSize(size)" style="cursor:pointer;"></i>
+    </span>
+  </div>
+</div>
+
+
+
+									<!-- <div class="col-12"> -->
 										<!-- <label class="form-label">Images</label> -->
 										<!-- <input class="form-control" type="file"> -->
 										<!-- <input class="form-control" type="file" (change)="handleImageUpload($event)" /> -->
 
-									</div>
+									<!-- </div> -->
 									<div class="col-12">
 										<div class="row">
 											<div class="col-8">
