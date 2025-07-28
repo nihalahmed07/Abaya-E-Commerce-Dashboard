@@ -129,6 +129,10 @@ export class OrdersDetailsComponent implements OnInit {
     }
   }
 
+  trackByFn(index: number, item: any) {
+  return item.id || index;
+}
+
   // Print functionality
   printOrderDetails(): void {
     const printContent = document.getElementById('printable-content')?.innerHTML;
