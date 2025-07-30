@@ -1,107 +1,39 @@
-/* import { Component } from '@angular/core';
-import { WpProductsService } from 'src/app/services/wp-products.service';
-
-@Component({
-  selector: 'app-add-new-product2',
-  templateUrl: './add-new-product2.component.html',
-  styleUrls: ['./add-new-product2.component.scss']
-})
-export class AddNewProduct2Component {
-  product: any = {
-    name: '',
-    sku: '',
-    color: '',
-    size: '',
-    brand: '',
-    price: '',
-    description: '',
-    status: 'publish', // 'draft' or 'publish'
-    tags: '',
-    categories: [],    // category IDs, handled separately if needed
-    image: null
-  };
-
-  imageFile: File | null = null;
-  isLoading = false;
-
-
-  constructor(private wpService: WpProductsService) {}
-
-  handleImageUpload(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.imageFile = file;
-      console.log('Selected image:', file.name);
-    }
-  }
-
-  publishProduct() {
-    const payload: any = {
-      name: this.product.name,
-      type: 'simple',
-      regular_price: this.product.price.toString(),
-      status: this.product.status,
-      sku: this.product.sku,
-      description: this.product.description,
-      short_description: `${this.product.brand} - ${this.product.color} - ${this.product.size}`,
-      tags: this.product.tags.split(',').map(tag => ({ name: tag.trim() })),
-      // categories: [{ id: 15 }, { id: 16 }] // if you're mapping categories by checkbox
-    };
-
-    this.wpService.addProduct(payload).subscribe({
-      next: (res) => {
-        console.log('✅ Product created:', res);
-        alert('Product published successfully!');
-      },
-      error: (err) => {
-        console.error('❌ Product creation failed:', err);
-        alert('Failed to publish product.');
-      }
-    });
-  }
-}
- */
-
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { WpProductsService } from 'src/app/services/wp-products.service';
 import { CategoryService } from 'src/app/services/categories.service';
-import { ViewChild, ElementRef } from '@angular/core';
+
 @Component({
   selector: 'app-add-new-product2',
   templateUrl: './add-new-product2.component.html',
   styleUrls: ['./add-new-product2.component.scss']
 })
-
 export class AddNewProduct2Component implements OnInit {
-   @ViewChild('fileInput') fileInput!: ElementRef;
+  @ViewChild('fileInput') fileInput!: ElementRef;
+
   productId: string | null = null;
-  isEditMode: boolean = false;
+  isEditMode = false;
   imageFile: File | null = null;
   isLoading = false;
   categoriesList: any[] = [];
-  tagInput: string = '';
-  newTag: string = '';
-  imagePreview: string = '';
-  color: string = '';
-size: string = '';
-brand: string = '';
+
+  newTag = '';
+  imagePreview = '';
+  customSize = '';
+
+  predefinedSizes: string[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+
   product: any = {
     name: '',
     sku: '',
     color: '',
-    size: '',
     brand: '',
-    price: '',
     description: '',
     status: 'publish',
-  
-  tags: [] as string[],
+    tags: [] as string[],
     categories: [] as number[],
-      sizes: [] as string[],
-   
-    
+    sizes: [] as { size: string; stock: number; price: number }[],
     image: null
   };
 
@@ -109,7 +41,7 @@ brand: string = '';
     private route: ActivatedRoute,
     private wpService: WpProductsService,
     private http: HttpClient,
-     private categoryService: CategoryService 
+    private categoryService: CategoryService
   ) {}
 
   ngOnInit(): void {
@@ -120,146 +52,130 @@ brand: string = '';
       this.loadProduct(Number(this.productId));
     }
   }
-fetchCategories(): void {
-  this.categoryService.getCategories().subscribe({
-    next: (data) => {
-      this.categoriesList = data;
-    },
-    error: (err) => console.error('❌ Failed to fetch categories:', err)
-  });
-}
-  // loadProduct(id: number) {
-  //   this.wpService.getProduct(id).subscribe({
-  //     next: (res) => {
-  //       this.product = {
-  //         name: res.name || '',
-  //         sku: res.sku || '',
-  //         color: '',
-  //         size: '',
-  //         brand: '',
-  //         price: res.regular_price || '',
-  //         description: res.description || '',
-  //         status: res.status || 'publish',
-  //         tags: res.tags?.map((tag: any) => tag.name).join(', ') || '',
-  //         categories: res.categories?.map((cat: any) => cat.id) || [],
-  //         image: res.images?.[0]?.src ? { url: res.images[0].src } : null
-  //       };
-  //     },
-  //     error: (err) => {
-  //       console.error('Failed to load product:', err);
-  //     }
-  //   });
-  // }
 
-loadProduct(id: number) {
-  this.wpService.getProduct(id).subscribe({
-    next: (res) => {
-      console.log('✅ FULL PRODUCT RESPONSE:', res);
-      console.log('🟡 META DATA:', res.meta_data);
+  fetchCategories(): void {
+    this.categoryService.getCategories().subscribe({
+      next: (data) => {
+        this.categoriesList = data;
+      },
+      error: (err) => console.error('❌ Failed to fetch categories:', err)
+    });
+  }
 
-      const color = this.getMetaValue(res.meta_data, 'color');
-      const size = this.getMetaValue(res.meta_data, 'size');
-      const brand = this.getMetaValue(res.meta_data, 'brand');
+  loadProduct(id: number) {
+    this.wpService.getProduct(id).subscribe({
+      next: (res) => {
+        this.product = {
+          name: res.name || '',
+          sku: res.sku || '',
+          color: this.getMetaValue(res.meta_data, 'color'),
+          brand: this.getMetaValue(res.meta_data, 'brand'),
+          description: res.description || '',
+          status: res.status || 'publish',
+          tags: [],
+          categories: res.categories?.map((cat: any) => cat.id) || [],
+          image: res.images?.[0] ? { id: res.images[0].id, url: res.images[0].src } : null,
+          sizes: [] // You could fetch variation info here if needed
+        };
 
-      console.log('🎯 Extracted Meta:', { color, size, brand });
+        this.imagePreview = this.product.image?.url || '';
 
-      this.product = {
-        name: res.name || '',
-        sku: res.sku || '',
-        color,
-        size,
-        brand,
-        price: res.regular_price || '',
-        description: res.description || '',
-        status: res.status || 'publish',
-        tags: [],
-        categories: res.categories?.map((cat: any) => cat.id) || [],
-        image: res.images?.[0]
-          ? { id: res.images[0].id, url: res.images[0].src }
-          : null,
-      };
-
-      this.color = color;
-      this.size = size;
-      this.brand = brand;
-
-      const tagIds = res.tags?.map(tag => tag.id) || [];
-      if (tagIds.length > 0) {
-        this.wpService.getTagsByIds(tagIds).subscribe({
-          next: (tags: any[]) => {
-            this.product.tags = tags.map(tag => tag.name);
-          },
-          error: (err) => console.error('Failed to load tags:', err)
-        });
+        const tagIds = res.tags?.map(tag => tag.id) || [];
+        if (tagIds.length > 0) {
+          this.wpService.getTagsByIds(tagIds).subscribe({
+            next: (tags: any[]) => {
+              this.product.tags = tags.map(tag => tag.name);
+            },
+            error: (err) => console.error('Failed to load tags:', err)
+          });
+        }
+      },
+      error: (err) => {
+        console.error('❌ Failed to load product:', err);
       }
+    });
+  }
 
-      this.imagePreview = this.product.image?.url || '';
-    },
-    error: (err) => {
-      console.error('❌ Failed to load product:', err);
+  getMetaValue(metaData: any[], key: string): string {
+    if (!Array.isArray(metaData)) return '';
+    const found = metaData.find(meta => meta.key.toLowerCase() === key.toLowerCase());
+    return found?.value ?? '';
+  }
+
+  handleImageUpload(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.imageFile = file;
+      const reader = new FileReader();
+      reader.onload = (e: any) => this.imagePreview = e.target.result;
+      reader.readAsDataURL(file);
     }
-  });
-}
-
-
-predefinedSizes: string[] = ['S', 'M', 'L', 'XL', 'XXL'];
-customSize: string = '';
-
-
-
-toggleSize(size: string) {
-  const index = this.product.sizes.indexOf(size);
-  if (index > -1) {
-    this.product.sizes.splice(index, 1); // remove
-  } else {
-    this.product.sizes.push(size); // add
   }
-}
 
-addCustomSize() {
-  const size = this.customSize.trim();
-  if (size && !this.product.sizes.includes(size)) {
-    this.product.sizes.push(size);
-  }
-  this.customSize = '';
-}
-
-removeSize(size: string) {
-  this.product.sizes = this.product.sizes.filter(s => s !== size);
-}
-
-
-getMetaValue(metaData: any[], key: string): string {
-  if (!Array.isArray(metaData)) return '';
-  const found = metaData.find(meta => meta.key.toLowerCase() === key.toLowerCase());
-  return found?.value ?? '';
-}
-handleImageUpload(event: any) {
-  const file = event.target.files[0];
-  if (file) {
-    this.imageFile = file;
-
-    // ✅ Create a preview URL immediately
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      this.imagePreview = e.target.result; // This will be the base64 image
-    };
-    reader.readAsDataURL(file);
-
-    console.log('✅ Selected image:', file.name);
-  }
-}
-removeImage() {
-  this.imagePreview = null;
-  this.imageFile = null;
+  removeImage() {
+    this.imagePreview = '';
+    this.imageFile = null;
     if (this.fileInput) {
-    this.fileInput.nativeElement.value = '';
+      this.fileInput.nativeElement.value = '';
+    }
   }
-}
 
-  uploadImageAndPublish() {
+  addTag() {
+    const trimmedTag = this.newTag.trim();
+    if (trimmedTag && !this.product.tags.includes(trimmedTag)) {
+      this.product.tags.push(trimmedTag);
+    }
+    this.newTag = '';
+  }
+
+  removeTag(tag: string) {
+    this.product.tags = this.product.tags.filter(t => t !== tag);
+  }
+
+  toggleCategory(id: number, checked: boolean) {
+    if (checked) {
+      if (!this.product.categories.includes(id)) {
+        this.product.categories.push(id);
+      }
+    } else {
+      this.product.categories = this.product.categories.filter(catId => catId !== id);
+    }
+  }
+
+  isSizeAdded(size: string): boolean {
+    return this.product.sizes.some(s => s.size.trim().toUpperCase() === size.trim().toUpperCase());
+  }
+
+  addSize(size: string): void {
+    const normalized = size.trim().toUpperCase();
+    if (!this.isSizeAdded(normalized)) {
+      this.product.sizes.push({ size: normalized, stock: 0, price: 0 });
+    }
+  }
+
+  addCustomSize(): void {
+    const trimmed = this.customSize.trim().toUpperCase();
+    if (trimmed && !this.isSizeAdded(trimmed)) {
+      this.product.sizes.push({ size: trimmed, stock: 0, price: 0 });
+      this.customSize = '';
+    }
+  }
+
+  removeSize(index: number): void {
+    this.product.sizes.splice(index, 1);
+  }
+
+  updateStock(index: number, stock: number) {
+    this.product.sizes[index].stock = stock;
+  }
+
+  updatePrice(index: number, price: number) {
+    this.product.sizes[index].price = price;
+  }
+
+  async uploadImageAndPublish() {
     if (!this.imageFile) {
-      this.publishProduct(); // No image to upload
+      this.publishProduct();
       return;
     }
 
@@ -270,7 +186,7 @@ removeImage() {
       next: (res) => {
         if (res.success && res.id) {
           this.product.image = { id: res.id, url: res.url };
-          this.publishProduct(); // Continue after image upload
+          this.publishProduct();
         } else {
           alert('Image upload failed.');
         }
@@ -281,90 +197,73 @@ removeImage() {
       }
     });
   }
-toggleCategory(id: number, checked: boolean) {
-  if (checked) {
-    if (!this.product.categories.includes(id)) {
-      this.product.categories.push(id);
+
+  async publishProduct() {
+    this.isLoading = true;
+
+    const payload: any = {
+      name: this.product.name,
+      type: 'variable',
+      status: this.product.status,
+      description: this.product.description,
+      short_description: `${this.product.brand} - ${this.product.color} - Sizes: ${this.product.sizes.map(s => s.size).join(', ')}`,
+      tags: this.product.tags.map(tag => ({ name: tag.trim() })),
+      categories: this.product.categories.map(id => ({ id })),
+      attributes: [
+        {
+          name: 'Size',
+          variation: true,
+          visible: true,
+          options: this.product.sizes.map(s => s.size)
+        }
+      ],
+      meta_data: [
+        { key: 'color', value: this.product.color },
+        { key: 'brand', value: this.product.brand }
+      ]
+    };
+
+    if (this.product.image?.id) {
+      payload.images = [{ id: this.product.image.id }];
     }
-  } else {
-    this.product.categories = this.product.categories.filter(catId => catId !== id);
-  }
-}
 
-removeCategory(id: number) {
-  this.product.categories = this.product.categories.filter(catId => catId !== id);
-}
-addTag() {
-  const trimmedTag = this.newTag.trim();
-  if (trimmedTag && !this.product.tags.includes(trimmedTag)) {
-    this.product.tags.push(trimmedTag);
-  }
-  this.newTag = ''; // Clear input
-}
+    try {
+      if (this.isEditMode && this.productId) {
+        await this.wpService.updateProduct(Number(this.productId), payload).toPromise();
+        alert('✅ Product updated!');
+      } else {
+        const createdProduct = await this.wpService.addProduct(payload).toPromise();
+        const productId = createdProduct.id;
 
-removeTag(tag: string) {
-  this.product.tags = this.product.tags.filter(t => t !== tag);
-}
-publishProduct() {
-  const payload: any = {
-    name: this.product.name,
-    type: 'variable',
-    regular_price: (this.product.price ?? '').toString(),
-    status: this.product.status,
-    // sku: this.product.sku,
-    description: this.product.description,
-    // short_description: `${this.product.brand} - ${this.product.color} - `,
-    tags: this.product.tags
-      .map((tag: string) => tag.trim())
-      .filter((tag: string) => tag.length > 0)
-      .map((tag: string) => ({ name: tag })),
-    categories: this.product.categories.map((id: number) => ({ id })),
-    short_description: `${this.product.brand} - ${this.product.color} - Sizes: ${this.product.sizes.join(', ')}`,
+        const variationPromises = this.product.sizes.map(s => this.wpService.createVariation(productId, {
+          regular_price: s.price.toString(),
+          stock_quantity: s.stock,
+          manage_stock: true,
+          status: 'publish',
+          attributes: [
+            {
+              name: 'Size',
+              option: s.size
+            }
+          ]
+        }).toPromise());
 
-attributes: [
-  {
-    name: 'Size',
-    variation: true,
-    visible: true,
-    options: this.product.sizes
-  }],
-    meta_data: [
-  { key: 'color', value: this.product.color },
-  { key: 'brand', value: this.product.brand }
-]
-  };
-
-  if (this.product.image?.id) {
-    payload.images = [{ id: this.product.image.id }];
-  }
-
-  // 🔍 Debug here:
-  console.log('📦 FINAL PAYLOAD SENT TO API:', payload);
-
-  if (this.isEditMode && this.productId) {
-    this.wpService.updateProduct(Number(this.productId), payload).subscribe({
-      next: () => alert('✅ Product updated successfully!'),
-      error: (err) => {
-        console.error('❌ Update failed:', err);
-        alert('Failed to update product.');
+        await Promise.all(variationPromises);
+        alert('✅ Product and variations added!');
       }
-    });
-  } else {
-    this.wpService.addProduct(payload).subscribe({
-      next: () => alert('✅ Product created successfully!'),
-      error: (err) => {
-        console.error('❌ Creation failed:', err);
-        alert('Failed to create product.');
-      }
-    });
+    } catch (err) {
+      console.error('❌ Failed to publish product:', err);
+      alert('❌ Product publish failed.');
+    } finally {
+      this.isLoading = false;
+    }
   }
-}
 
   get tagsAsString(): string {
-  return this.product.tags.join(', ');
-}
+    return this.product.tags.join(', ');
+  }
 
-set tagsAsString(value: string) {
-  this.product.tags = value.split(',').map(tag => tag.trim());
-}
+  set tagsAsString(value: string) {
+    this.product.tags = value.split(',').map(tag => tag.trim());
+  }
 }

@@ -10,10 +10,15 @@ export class WpProductsService {
 
   constructor(private http: HttpClient) {}
 
+  // ✅ Add Product
+  addProduct(data: any): Observable<any> {
+    const params = this.authParams();
+    return this.http.post(this.baseUrl, data, { params });
+  }
+
+  // ✅ Get All Products with Filters
   getProducts(params: any): Observable<any> {
-    let httpParams = new HttpParams()
-      .set('consumer_key', this.consumerKey)
-      .set('consumer_secret', this.consumerSecret)
+    let httpParams = this.authParams()
       .set('per_page', params.per_page || '10')
       .set('page', params.page || '1');
 
@@ -25,95 +30,72 @@ export class WpProductsService {
     return this.http.get(this.baseUrl, { params: httpParams, observe: 'response' });
   }
 
+  // ✅ Get Single Product
+  getProduct(id: number): Observable<any> {
+    const params = this.authParams().set(
+      '_fields',
+      'id,name,sku,regular_price,description,status,categories,tags,images,meta_data'
+    );
+    return this.http.get(`${this.baseUrl}/${id}`, { params });
+  }
+
+  // ✅ Update Product
+  updateProduct(id: number, data: any): Observable<any> {
+    const params = this.authParams();
+    return this.http.put(`${this.baseUrl}/${id}`, data, { params });
+  }
+
+  // ✅ Delete Product
+  deleteProduct(id: number): Observable<any> {
+    const params = this.authParams().set('force', 'true');
+    return this.http.delete(`${this.baseUrl}/${id}`, { params });
+  }
+
+  // ✅ Get Categories
   getCategories(): Observable<any[]> {
-  const url = 'https://cybercloudapp.com/wp-json/wc/v3/products/categories';
-  const params = new HttpParams()
-    .set('consumer_key', this.consumerKey)
-    .set('consumer_secret', this.consumerSecret)
-    .set('per_page', '100');
+    const url = 'https://cybercloudapp.com/wp-json/wc/v3/products/categories';
+    const params = this.authParams().set('per_page', '100');
+    return this.http.get<any[]>(url, { params });
+  }
 
-  return this.http.get<any[]>('https://cybercloudapp.com/wp-json/wc/v3/products/categories', { params });
-}
+  // ✅ Get Tags by ID
+  getTagsByIds(ids: number[]): Observable<any[]> {
+    const params = this.authParams().set('include', ids.join(','));
+    return this.http.get<any[]>('https://cybercloudapp.com/wp-json/wc/v3/products/tags', { params });
+  }
 
+  // ✅ Upload Product Image (Media)
+  uploadImage(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
 
-  // Get single product
-// getProduct(id: number): Observable<any> {
-//   const params = this.authParams();
-//   return this.http.get(`${this.baseUrl}/${id}`, { params });
-// }
-getProduct(id: number): Observable<any> {
-  const params = this.authParams()
-    .set('_fields', 'id,name,sku,regular_price,description,status,categories,tags,images,meta_data');
+    // You must create this app password from your WP user profile
+    const username = 'admin';
+    const appPassword = 'Abcd246@1'; // 🔐 Keep secure
+    const base64Token = btoa(`${username}:${appPassword}`);
 
-  return this.http.get(`${this.baseUrl}/${id}`, { params });
-}
-// Update product
-updateProduct(id: number, data: any): Observable<any> {
-  const params = this.authParams();
-  return this.http.put(`${this.baseUrl}/${id}`, data, { params });
-}
+    return this.http.post('https://cybercloudapp.com/wp-json/wp/v2/media', formData, {
+      headers: {
+        Authorization: `Basic ${base64Token}`,
+        'Content-Disposition': `attachment; filename="${file.name}"`,
+      },
+    });
+  }
 
-// Delete product
-deleteProduct(id: number): Observable<any> {
-  const params = this.authParams().set('force', 'true'); // hard delete, remove for soft
-  return this.http.delete(`${this.baseUrl}/${id}`, { params });
-}
+  // ✅ Create a Variation (Size + Stock)
+  createVariation(productId: number, data: any): Observable<any> {
+    const params = this.authParams();
+    return this.http.post(
+      `https://cybercloudapp.com/wp-json/wc/v3/products/${productId}/variations`,
+      data,
+      { params }
+    );
+  }
 
-// Utility for auth
-private authParams(): HttpParams {
-  return new HttpParams()
-    .set('consumer_key', this.consumerKey)
-    .set('consumer_secret', this.consumerSecret);
-}
-
-addProduct(data: any) {
-  const params = new HttpParams()
-    .set('consumer_key', this.consumerKey)
-    .set('consumer_secret', this.consumerSecret);
-
-  return this.http.post(this.baseUrl, data, { params });
-}
-// uploadImage(file: File): Observable<any> {
-//   const formData = new FormData();
-//   formData.append('file', file);
-
-//   const username = 'ck_dd111222ce2c0914e75dc284afff6a080243a2b4'; // 🔐 Your Consumer Key
-//   const password = 'cs_31cfcfe1e7ac08abafcf197a0d651e32a0758987'; // 🔐 Your Consumer Secret
-//   const authHeader = 'Basic ' + btoa(`${username}:${password}`);
-
-//   return this.http.post(`https://cybercloudapp.com/wp-json/wp/v2/media`, formData, {
-//     headers: {
-//       Authorization: authHeader,
-//       'Content-Disposition': `attachment; filename="${file.name}"`
-//     }
-//   });
-// }
-
-uploadImage(file: File): Observable<any> {
-  const formData = new FormData();
-  formData.append('file', file);
-
-  const username = 'admin';
-  const appPassword = 'Abcd246@1'; // Create from WordPress user profile
-  const base64Token = btoa(`${username}:${appPassword}`);
-
-  return this.http.post('https://cybercloudapp.com/wp-json/wp/v2/media', formData, {
-    headers: {
-      Authorization: `Basic ${base64Token}`,
-      'Content-Disposition': `attachment; filename="${file.name}"`,
-    }
-  });
-}
-
-
-getTagsByIds(ids: number[]): Observable<any[]> {
-  const params = new HttpParams()
-    .set('consumer_key', this.consumerKey)
-    .set('consumer_secret', this.consumerSecret)
-    .set('include', ids.join(','));
-
-  return this.http.get<any[]>('https://cybercloudapp.com/wp-json/wc/v3/products/tags', { params });
-}
-
-
+  // ✅ Utility: Authentication Params
+  private authParams(): HttpParams {
+    return new HttpParams()
+      .set('consumer_key', this.consumerKey)
+      .set('consumer_secret', this.consumerSecret);
+  }
 }
