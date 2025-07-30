@@ -1,329 +1,267 @@
-<!--breadcrumb-->
+<!-- breadcrumb -->
 <div class="page-breadcrumb d-flex flex-wrap align-items-center mb-3 justify-content-between">
-
 	<div class="breadcrumb-title pe-3">eCommerce</div>
 	<div class="ps-3">
 		<nav aria-label="breadcrumb">
 			<ol class="breadcrumb mb-0 p-0">
-				<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+				<li class="breadcrumb-item">
+					<a href="javascript:;"><i class="bx bx-home-alt"></i></a>
 				</li>
-				<li class="breadcrumb-item active" aria-current="page">Add New Product</li>
+				<li class="breadcrumb-item active" aria-current="page">
+					Add New Product
+				</li>
 			</ol>
 		</nav>
 	</div>
 	<div class="ms-auto">
-		<!-- <div class="btn-group">
-			<button type="button" class="btn btn-primary">Settings</button>
-			<button type="button" class="btn btn-primary split-bg-primary dropdown-toggle dropdown-toggle-split"
-				data-bs-toggle="dropdown"> <span class="visually-hidden">Toggle Dropdown</span>
-			</button>
-			<div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end"> <a class="dropdown-item"
-					href="javascript:;">Action</a>
-				<a class="dropdown-item" href="javascript:;">Another action</a>
-				<a class="dropdown-item" href="javascript:;">Something else here</a>
-				<div class="dropdown-divider"></div> <a class="dropdown-item" href="javascript:;">Separated link</a>
-			</div>
-		</div> -->
+		<!-- publish button -->
+		<button type="button" class="btn btn-primary" [disabled]="isLoading" (click)="uploadImageAndPublish()">
+			<span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1"></span>
+			{{ isLoading ? "Publishing..." : "Publish Now" }}
+		</button>
 	</div>
 </div>
 <!-- end breadcrumb -->
 
 <div class="row">
-  <div class="col-lg-12 mx-auto">
-    <div class="card">
-      <div class="card-header py-3 bg-transparent">
-        <div class="d-sm-flex align-items-center">
-          <h5 class="mb-2 mb-sm-0">{{ isEditMode ? "Edit Product" : "Add New Product" }}</h5>
-        </div>
-      </div>
+	<div class="col-lg-12 mx-auto">
+		<div class="card">
+			<div class="card-header py-3 bg-transparent">
+				<div class="d-sm-flex align-items-center">
+					<h5 class="mb-2 mb-sm-0">{{ isEditMode ? "Edit Product" : "Add New Product" }}</h5>
+				</div>
+			</div>
 
-      <div class="card-body">
-        <div class="row g-3">
-          <!-- Left column -->
-          <div class="col-12 col-lg-8">
-            <div class="card shadow-none bg-light border">
-              <div class="card-body">
-                <form class="row g-3">
-                  <!-- Product Title -->
-                  <div class="col-12">
-                    <label class="form-label">Product title</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      placeholder="Product title"
-                      [(ngModel)]="product.name"
-                      name="productName"
-                      required
-                    />
-                  </div>
+			<div class="card-body">
+				<div class="row g-3">
+					<!-- Left column -->
+					<div class="col-12 col-lg-8">
+						<div class="card shadow-none bg-light border">
+							<div class="card-body">
+								<form class="row g-3">
+									<!-- Product Title -->
+									<div class="col-12">
+										<label class="form-label">Product title</label>
+										<input type="text" class="form-control" placeholder="Product title"
+											[(ngModel)]="product.name" name="productName" required />
+									</div>
 
-					<div class="ms-auto">
-                  <!-- Brand, Color, Size -->
-                  <div class="col-12 col-lg-4">
-                    <label class="form-label" for="brand">Brand</label>
-                    <input
-                      type="text"
-                      id="brand"
-                      [(ngModel)]="product.brand"
-                      name="brand"
-                      class="form-control"
-                    />
-                  </div>
 
-                  <div class="col-12 col-lg-4">
-                    <label class="form-label">Color</label>
-                    <input
-                      type="text"
-                      id="color"
-                      [(ngModel)]="product.color"
-                      name="color"
-                      class="form-control"
-                    />
-                  </div>
+									<!-- Brand, Color, Size -->
+									<div class="col-12 col-lg-4">
+										<label class="form-label" for="brand">Brand</label>
+										<input type="text" id="brand" [(ngModel)]="product.brand" name="brand"
+											class="form-control" />
+									</div>
 
-                  <div class="col-12 col-lg-4">
-                    <label class="form-label">Size</label>
-                    <input
-                      type="text"
-                      id="size"
-                      [(ngModel)]="product.size"
-                      name="size"
-                      class="form-control"
-                    />
-                  </div>
+									<div class="col-12 col-lg-4">
+										<label class="form-label">Color</label>
+										<input type="text" id="color" [(ngModel)]="product.color" name="color"
+											class="form-control" />
+									</div>
 
-      <div class="col-12 col-lg-4">
-  <label class="form-label">Sizes, Stocks & Prices</label>
+									<div class="col-12 col-lg-4">
+										<label class="form-label">Simple product Size</label>
+										<input type="text" id="size" [(ngModel)]="product.size" name="size"
+											class="form-control" />
+									</div>
 
-  <!-- Predefined Sizes -->
-  <div class="d-flex flex-wrap gap-2 mb-2">
-    <button
-      type="button"
-      class="btn btn-outline-primary"
-      *ngFor="let sz of predefinedSizes"
-      [disabled]="isSizeAdded(sz)"
-      (click)="addSize(sz)"
-    >
-      + {{ sz }}
-    </button>
-  </div>
+									
 
-  <!-- Custom Size Input -->
-  <div class="input-group mb-2">
-    <input
-      type="text"
-      class="form-control form-control-sm"
-      [(ngModel)]="customSize"
-      (keyup.enter)="addCustomSize()"
-      placeholder="Add custom size (e.g. XS, 3XL)"
-      name="customSizeInput"
-    />
-    <button
-      type="button"
-      class="btn btn-outline-primary btn-sm"
-      (click)="addCustomSize()"
-    >
-      Add
-    </button>
-  </div>
+									<div class="col-12">
+										<label class="form-label">Sizes, Stocks & Prices</label>
 
-  <!-- Dynamic List -->
-  <div class="mt-2 d-flex flex-column gap-2">
-    <div
-      class="d-flex align-items-center gap-2"
-      *ngFor="let s of product.sizes; let i = index"
-    >
-      <span class="badge bg-secondary p-2 px-3">{{ s.size }}</span>
+										<!-- Predefined Sizes -->
+										<div class="d-flex flex-wrap gap-2 mb-2">
+											<button type="button" class="btn btn-outline-primary"
+												*ngFor="let sz of predefinedSizes" [disabled]="isSizeAdded(sz)"
+												(click)="addSize(sz)">
+												+ {{ sz }}
+											</button>
+										</div>
 
-      <input
-        type="number"
-        class="form-control form-control-sm w-25"
-        [(ngModel)]="s.stock"
-        placeholder="Stock"
-        name="stockInput{{i}}"
-      />
+										<!-- Custom Size Input -->
+										<div class="input-group mb-3">
+											<input type="text" class="form-control form-control-sm"
+												[(ngModel)]="customSize" (keyup.enter)="addCustomSize()"
+												placeholder="Add custom size (e.g. XS, 3XL)" name="customSizeInput" />
+											<button type="button" class="btn btn-outline-primary btn-sm"
+												(click)="addCustomSize()">
+												Add
+											</button>
+										</div>
 
-      <input
-        type="number"
-        class="form-control form-control-sm w-25"
-        [(ngModel)]="s.price"
-        placeholder="Price"
-        name="priceInput{{i}}"
-      />
-
-      <button
-        type="button"
-        class="btn btn-outline-danger btn-sm"
-        (click)="removeSize(i)"
-      >
-        −
-      </button>
-    </div>
-  </div>
-</div>
+										<!-- Table Layout -->
+										<div class="table-responsive">
+											<table class="table table-bordered align-middle mb-0">
+												<thead class="table-light">
+													<tr>
+														<th>Size</th>
+														<th>Stock</th>
+														<th>Price</th>
+														<th class="text-center">Action</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr *ngFor="let s of product.sizes; let i = index">
+														<td>
+															<input type="text" class="form-control form-control-sm"
+																[(ngModel)]="s.size" name="sizeInput{{ i }}" readonly />
+														</td>
+														<td>
+															<input type="number" class="form-control form-control-sm"
+																[(ngModel)]="s.stock" name="stockInput{{ i }}"
+																placeholder="Stock" />
+														</td>
+														<td>
+															<input type="number" class="form-control form-control-sm"
+																[(ngModel)]="s.price" name="priceInput{{ i }}"
+																placeholder="Price" />
+														</td>
+														<td class="text-center">
+															<button type="button" class="btn btn-sm btn-outline-danger"
+																(click)="removeSize(i)">
+																&minus;
+															</button>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
 
 
 
 
 
-                  <!-- Image Upload -->
-                  <div class="col-12">
-                    <label class="form-label">Images</label>
-                    <div class="row">
-                      <div class="col-8">
-                        <input
-                          class="form-control"
-                          type="file"
-                          (change)="handleImageUpload($event)"
-                          accept="image/*"
-                          #fileInput
-                        />
-                        <small class="text-muted" *ngIf="isEditMode && product.image && !imageFile">
-                          Existing image: {{ product.image.url.split("/").pop() }} – Choose a file to replace.
-                        </small>
-                        <small class="text-success" *ngIf="imageFile">
-                          Selected file: {{ imageFile.name }}
-                        </small>
-                      </div>
-                      <div class="col-4">
-                        <div class="position-relative mt-2" *ngIf="imagePreview">
-                          <img [src]="imagePreview" alt="Preview" class="img-thumbnail" />
-                          <button
-                            type="button"
-                            class="btn btn-sm btn-danger position-absolute top-0 end-0"
-                            (click)="removeImage()"
-                          >
-                            <i class="bi bi-x"></i>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
 
-                  <!-- Description -->
-                  <div class="col-12">
-                    <label class="form-label">Full description</label>
-                    <textarea
-                      class="form-control"
-                      placeholder="Full description"
-                      [(ngModel)]="product.description"
-                      name="description"
-                      rows="4"
-                    ></textarea>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
+									<!-- Image Upload -->
+									<div class="col-12">
+										<label class="form-label">Images</label>
+										<div class="row">
+											<div class="col-8">
+												<input class="form-control" type="file"
+													(change)="handleImageUpload($event)" accept="image/*" #fileInput />
+												<small class="text-muted"
+													*ngIf="isEditMode && product.image && !imageFile">
+													Existing image: {{ product.image.url.split("/").pop() }} –
+													Choose a file to replace.
+												</small>
+												<small class="text-success" *ngIf="imageFile">
+													Selected file: {{ imageFile.name }}
+												</small>
+											</div>
+											<div class="col-4">
+												<div class="position-relative mt-2" *ngIf="imagePreview">
+													<img [src]="imagePreview" alt="Preview" class="img-thumbnail" />
+													<button type="button"
+														class="btn btn-sm btn-danger position-absolute top-0 end-0"
+														(click)="removeImage()">
+														<i class="bi bi-x"></i>
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
 
-          <!-- Right column -->
-          <div class="col-12 col-lg-4">
-            <div class="card shadow-none bg-light border">
-              <div class="card-body">
-                <div class="row g-3">
-                  <!-- Price -->
-                  <div class="col-12">
-                    <label class="form-label">Price</label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      [(ngModel)]="product.price"
-                      required
-                      min="1"
-                    />
-                  </div>
+									<!-- Description -->
+									<div class="col-12">
+										<label class="form-label">Full description</label>
+										<textarea class="form-control" placeholder="Full description"
+											[(ngModel)]="product.description" name="description" rows="4"></textarea>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
 
-                  <!-- Status -->
-                  <div class="col-12">
-                    <label class="form-label">Status</label>
-                    <select
-                      class="form-select"
-                      [(ngModel)]="product.status"
-                      name="status"
-                    >
-                      <option value="publish">Published</option>
-                      <option value="draft">Draft</option>
-                    </select>
-                  </div>
+					<!-- Right column -->
+					<div class="col-12 col-lg-4">
+						<div class="card shadow-none bg-light border">
+							<div class="card-body">
+								<div class="row g-3">
+									<!-- Price -->
+									<div class="col-12">
+										<label class="form-label">Simple Product Price</label>
+										<input type="number" class="form-control" [(ngModel)]="product.price" required
+											min="1" />
+									</div>
 
-                  <!-- Tags -->
-                  <div class="col-12">
-                    <div class="d-flex align-items-center gap-2 flex-wrap p-4">
-                      <ng-container *ngIf="product.tags && product.tags.length; else noTags">
-                        <a
-                          *ngFor="let tag of product.tags"
-                          href="javascript:;"
-                          class="btn btn-sm btn-light border shadow-sm bg-white"
-                        >
-                          {{ tag }}
-                          <i class="bi bi-x ms-1" (click)="removeTag(tag)"></i>
-                        </a>
-                      </ng-container>
-                      <ng-template #noTags>
-                        <span class="text-muted">No tags assigned</span>
-                      </ng-template>
-                    </div>
-                    <div class="mb-3">
-                      <label class="form-label">Tags</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Add a tag and press Enter"
-                        [(ngModel)]="newTag"
-                        (keyup.enter)="addTag()"
-                      />
-                    </div>
-                  </div>
+									<!-- Status -->
+									<div class="col-12">
+										<label class="form-label">Status</label>
+										<select class="form-select" [(ngModel)]="product.status" name="status">
+											<option value="publish">Published</option>
+											<option value="draft">Draft</option>
+										</select>
+									</div>
 
-                  <!-- Categories -->
-                  <div class="col-12">
-                    <div class="d-flex align-items-center gap-2 flex-wrap">
-                      <ng-container *ngIf="product.categories && product.categories.length; else noCats">
-                        <ng-container *ngFor="let cat of categoriesList">
-                          <ng-container *ngIf="product.categories.includes(cat.id)">
-                            <a
-                              href="javascript:;"
-                              class="btn btn-sm btn-light border shadow-sm bg-white"
-                            >
-                              {{ cat.name }}
-                              <i class="bi bi-x ms-1" (click)="removeCategory(cat.id)"></i>
-                            </a>
-                          </ng-container>
-                        </ng-container>
-                      </ng-container>
-                      <ng-template #noCats>
-                        <span class="text-muted">No categories selected</span>
-                      </ng-template>
-                    </div>
-                  </div>
+									<!-- Tags -->
+									<div class="col-12">
+										<div class="d-flex align-items-center gap-2 flex-wrap p-4">
+											<ng-container *ngIf="product.tags && product.tags.length; else noTags">
+												<a *ngFor="let tag of product.tags" href="javascript:;"
+													class="btn btn-sm btn-light border shadow-sm bg-white">
+													{{ tag }}
+													<i class="bi bi-x ms-1" (click)="removeTag(tag)"></i>
+												</a>
+											</ng-container>
+											<ng-template #noTags>
+												<span class="text-muted">No tags assigned</span>
+											</ng-template>
+										</div>
+										<div class="mb-3">
+											<label class="form-label">Tags</label>
+											<input type="text" class="form-control"
+												placeholder="Add a tag and press Enter" [(ngModel)]="newTag"
+												(keyup.enter)="addTag()" />
+										</div>
+									</div>
 
-                  <div class="col-12">
-                    <h5>Categories</h5>
-                    <div class="category-list">
-                      <div *ngFor="let cat of categoriesList" class="form-check">
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          [id]="'cat-' + cat.id"
-                          [value]="cat.id"
-                          [checked]="product.categories.includes(cat.id)"
-                          (change)="toggleCategory(cat.id, $event.target.checked)"
-                        />
-                        <label class="form-check-label" [for]="'cat-' + cat.id">
-                          {{ cat.name }}
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- end row -->
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- end row -->
-      </div>
-    </div>
-  </div>
+									<!-- Categories -->
+									<div class="col-12">
+										<div class="d-flex align-items-center gap-2 flex-wrap">
+											<ng-container
+												*ngIf="product.categories && product.categories.length; else noCats">
+												<ng-container *ngFor="let cat of categoriesList">
+													<ng-container *ngIf="product.categories.includes(cat.id)">
+														<a href="javascript:;"
+															class="btn btn-sm btn-light border shadow-sm bg-white">
+															{{ cat.name }}
+															<i class="bi bi-x ms-1"
+																(click)="removeCategory(cat.id)"></i>
+														</a>
+													</ng-container>
+												</ng-container>
+											</ng-container>
+											<ng-template #noCats>
+												<span class="text-muted">No categories selected</span>
+											</ng-template>
+										</div>
+									</div>
+
+									<div class="col-12">
+										<h5>Categories</h5>
+										<div class="category-list">
+											<div *ngFor="let cat of categoriesList" class="form-check">
+												<input type="checkbox" class="form-check-input" [id]="'cat-' + cat.id"
+													[value]="cat.id" [checked]="product.categories.includes(cat.id)"
+													(change)="toggleCategory(cat.id, $event.target.checked)" />
+												<label class="form-check-label" [for]="'cat-' + cat.id">
+													{{ cat.name }}
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- end row -->
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end row -->
+			</div>
+		</div>
+	</div>
 </div>
 <!-- end row -->
