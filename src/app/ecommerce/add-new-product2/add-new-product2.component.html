@@ -326,3 +326,15 @@
   </div>
 </div>
 <!-- end row -->
+<div class="row">
+  <div class="col-12 text-center">
+    <button
+      type="button"
+      class="btn btn-primary"
+      [disabled]="isLoading"
+      (click)="uploadImageAndPublish()"
+    >
+      <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1"></span>
+      {{ isLoading ? "Publishing..." : "Publish Now" }}
+    </button>
+  </div>

@@ -75,7 +75,7 @@ export class AddNewProduct2Component implements OnInit {
           tags: [],
           categories: res.categories?.map((cat: any) => cat.id) || [],
           image: res.images?.[0] ? { id: res.images[0].id, url: res.images[0].src } : null,
-          sizes: [] // You could fetch variation info here if needed
+          sizes: []
         };
 
         this.imagePreview = this.product.image?.url || '';
@@ -104,12 +104,62 @@ export class AddNewProduct2Component implements OnInit {
 
   handleImageUpload(event: any) {
     const file = event.target.files[0];
-    if (file) {
-      this.imageFile = file;
-      const reader = new FileReader();
-      reader.onload = (e: any) => this.imagePreview = e.target.result;
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const img = new Image();
+      img.src = e.target.result;
+
+      img.onload = () => {
+        const targetWidth = 433;
+        const targetHeight = 577;
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+
+        // Fill white background
+        ctx!.fillStyle = '#ffffff';
+        ctx!.fillRect(0, 0, targetWidth, targetHeight);
+
+        // Maintain aspect ratio
+        const imgRatio = img.width / img.height;
+        const targetRatio = targetWidth / targetHeight;
+
+        let drawWidth = targetWidth;
+        let drawHeight = targetHeight;
+
+        if (imgRatio > targetRatio) {
+          drawWidth = targetHeight * imgRatio;
+          drawHeight = targetHeight;
+        } else {
+          drawWidth = targetWidth;
+          drawHeight = targetWidth / imgRatio;
+        }
+
+        const offsetX = (targetWidth - drawWidth) / 2;
+        const offsetY = (targetHeight - drawHeight) / 2;
+
+        ctx?.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const croppedFile = new File([blob], file.name, { type: 'image/jpeg' });
+            this.imageFile = croppedFile;
+
+            const previewReader = new FileReader();
+            previewReader.onload = (pe: any) => {
+              this.imagePreview = pe.target.result;
+            };
+            previewReader.readAsDataURL(croppedFile);
+          }
+        }, 'image/jpeg', 0.9); // 90% quality
+      };
+    };
+
+    reader.readAsDataURL(file);
   }
 
   removeImage() {
