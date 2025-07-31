@@ -87,7 +87,7 @@
 						</div>
 					</div>
 
-					<div class="card border shadow-none radius-10">
+					<!-- <div class="card border shadow-none radius-10">
 						<div class="card-body">
 							<div class="d-flex align-items-center gap-3">
 								<div class="icon-box bg-light-warning border-0">
@@ -110,7 +110,7 @@
 								</div>
 							</div>
 						</div>
-					</div>
+					</div> -->
 
 				</div>
 
@@ -175,6 +175,8 @@
 									<thead class="table-light">
 										<tr>
 											<th>Product</th>
+											<th>Product Size</th>
+											<th>Comments</th>
 											<th>Unit Price</th>
 											<th>Quantity</th>
 											<th>Total</th>
@@ -183,6 +185,8 @@
 									<tbody>
 										<tr *ngFor="let item of order?.line_items ;trackBy: trackByFn">
 											<td>{{ item?.name }}</td>
+											<td>{{ item?.sizes }}</td>
+											<td>{{ item?.comment }}</td>
 											<td>${{ item?.price }}</td>
 											<td>{{ item?.quantity }}</td>
 											<td>${{ item?.total }}</td>
