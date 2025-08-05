@@ -8,7 +8,7 @@ export class WpProductsService {
   private consumerKey = 'ck_a5d1866cd08f77c20b601dd09746f0f00c3b6878';
   private consumerSecret = 'cs_729c552b1298055023ea6985f4120d5619ae1c0a';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   private authParams(): HttpParams {
     return new HttpParams()
@@ -28,8 +28,6 @@ export class WpProductsService {
       .set('per_page', params.per_page || '10')
       .set('page', params.page || '1');
 
-
-
     if (params.search) httpParams = httpParams.set('search', params.search);
     if (params.status && params.status !== 'all') httpParams = httpParams.set('status', params.status);
     if (params.stock_status && params.stock_status !== 'all') httpParams = httpParams.set('stock_status', params.stock_status);
@@ -38,15 +36,6 @@ export class WpProductsService {
     return this.http.get(this.baseUrl, { params: httpParams, observe: 'response' });
   }
 
-  getProductVariations(productId: number): Observable<any[]> {
-  const url = `${this.baseUrl}/${productId}/variations`;
-  return this.http.get<any[]>(url, {
-    params: this.authParams()
-  });
-}
-
-
-
   // ✅ Get Single Product
   getProduct(id: number): Observable<any> {
     const params = this.authParams().set(
@@ -54,6 +43,34 @@ export class WpProductsService {
       'id,name,sku,regular_price,description,status,categories,tags,images,meta_data'
     );
     return this.http.get(`${this.baseUrl}/${id}`, { params });
+  }
+
+  // ✅ Get Product Variations
+  getProductVariations(productId: number): Observable<any[]> {
+    const url = `${this.baseUrl}/${productId}/variations`;
+    return this.http.get<any[]>(url, {
+      params: this.authParams()
+    });
+  }
+
+  // ✅ Create Variation
+  createVariation(productId: number, data: any): Observable<any> {
+    const params = this.authParams();
+    return this.http.post(
+      `https://cybercloudapp.com/wp-json/wc/v3/products/${productId}/variations`,
+      data,
+      { params }
+    );
+  }
+
+  // ✅ Update Variation
+  updateVariation(productId: number, variationId: number, data: any): Observable<any> {
+    const params = this.authParams();
+    return this.http.put(
+      `https://cybercloudapp.com/wp-json/wc/v3/products/${productId}/variations/${variationId}`,
+      data,
+      { params }
+    );
   }
 
   // ✅ Update Product
@@ -86,9 +103,9 @@ export class WpProductsService {
     const formData = new FormData();
     formData.append('file', file);
 
-    // You must create this app password from your WP user profile
+    // ⚠️ Make sure to store app password securely
     const username = 'admin';
-    const appPassword = 'Abcd246@1'; // 🔐 Keep secure
+    const appPassword = 'Abcd246@1'; // 🔐 Secure this
     const base64Token = btoa(`${username}:${appPassword}`);
 
     return this.http.post('https://cybercloudapp.com/wp-json/wp/v2/media', formData, {
@@ -98,18 +115,4 @@ export class WpProductsService {
       },
     });
   }
-
-  // ✅ Create a Variation (Size + Stock)
-  createVariation(productId: number, data: any): Observable<any> {
-    const params = this.authParams();
-    return this.http.post(
-      `https://cybercloudapp.com/wp-json/wc/v3/products/${productId}/variations`,
-      data,
-      { params }
-    );
-  }
-
-  
-  
-
 }

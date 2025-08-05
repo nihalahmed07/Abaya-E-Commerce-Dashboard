@@ -33,7 +33,7 @@ export class AddNewProduct2Component implements OnInit {
     status: 'publish',
     tags: [] as string[],
     categories: [] as number[],
-    sizes: [] as { size: string; stock: number; price: number }[],
+    sizes: [] as { size: string; stock: number; price: number; variation_id?: number }[],
     image: null
   };
 
@@ -42,7 +42,7 @@ export class AddNewProduct2Component implements OnInit {
     private wpService: WpProductsService,
     private http: HttpClient,
     private categoryService: CategoryService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.fetchCategories();
@@ -55,65 +55,57 @@ export class AddNewProduct2Component implements OnInit {
 
   fetchCategories(): void {
     this.categoryService.getCategories().subscribe({
-      next: (data) => {
-        this.categoriesList = data;
-      },
+      next: (data) => this.categoriesList = data,
       error: (err) => console.error('❌ Failed to fetch categories:', err)
     });
   }
 
   loadProduct(id: number) {
-  this.wpService.getProduct(id).subscribe({
-    next: (res) => {
-      this.product = {
-        name: res.name || '',
-        sku: res.sku || '',
-        color: this.getMetaValue(res.meta_data, 'color'),
-        brand: this.getMetaValue(res.meta_data, 'brand'),
-        description: res.description || '',
-        status: res.status || 'publish',
-        tags: [],
-        categories: res.categories?.map((cat: any) => cat.id) || [],
-        image: res.images?.[0] ? { id: res.images[0].id, url: res.images[0].src } : null,
-        sizes: []
-      };
+    this.wpService.getProduct(id).subscribe({
+      next: (res) => {
+        this.product = {
+          name: res.name || '',
+          sku: res.sku || '',
+          color: this.getMetaValue(res.meta_data, 'color'),
+          brand: this.getMetaValue(res.meta_data, 'brand'),
+          description: res.description || '',
+          status: res.status || 'publish',
+          tags: [],
+          categories: res.categories?.map((cat: any) => cat.id) || [],
+          image: res.images?.[0] ? { id: res.images[0].id, url: res.images[0].src } : null,
+          sizes: []
+        };
 
-      this.imagePreview = this.product.image?.url || '';
+        this.imagePreview = this.product.image?.url || '';
 
-      const tagIds = res.tags?.map(tag => tag.id) || [];
-      if (tagIds.length > 0) {
-        this.wpService.getTagsByIds(tagIds).subscribe({
-          next: (tags: any[]) => {
-            this.product.tags = tags.map(tag => tag.name);
-          },
-          error: (err) => console.error('Failed to load tags:', err)
-        });
-      }
-
-      // ✅ Load variations (sizes, stock, price)
-      this.wpService.getProductVariations(id).subscribe({
-        next: (variations: any[]) => {
-          this.product.sizes = variations.map((v: any) => {
-            const sizeAttr = v.attributes.find((a: any) => a.name.toLowerCase() === 'size');
-            return {
-              size: sizeAttr?.option || '',
-              stock: v.stock_quantity || 0,
-              price: parseFloat(v.regular_price || '0')
-            };
+        const tagIds = res.tags?.map(tag => tag.id) || [];
+        if (tagIds.length > 0) {
+          this.wpService.getTagsByIds(tagIds).subscribe({
+            next: (tags: any[]) => {
+              this.product.tags = tags.map(tag => tag.name);
+            },
+            error: (err) => console.error('❌ Failed to load tags:', err)
           });
-        },
-        error: (err) => {
-          console.error('❌ Failed to load variations:', err);
         }
-      });
 
-    },
-    error: (err) => {
-      console.error('❌ Failed to load product:', err);
-    }
-  });
-}
-
+        this.wpService.getProductVariations(id).subscribe({
+          next: (variations: any[]) => {
+            this.product.sizes = variations.map((v: any) => {
+              const sizeAttr = v.attributes.find((a: any) => a.name.toLowerCase() === 'size');
+              return {
+                variation_id: v.id,
+                size: sizeAttr?.option || '',
+                stock: v.stock_quantity || 0,
+                price: parseFloat(v.regular_price || '0')
+              };
+            });
+          },
+          error: (err) => console.error('❌ Failed to load variations:', err)
+        });
+      },
+      error: (err) => console.error('❌ Failed to load product:', err)
+    });
+  }
 
   getMetaValue(metaData: any[], key: string): string {
     if (!Array.isArray(metaData)) return '';
@@ -139,11 +131,9 @@ export class AddNewProduct2Component implements OnInit {
         canvas.width = targetWidth;
         canvas.height = targetHeight;
 
-        // Fill white background
         ctx!.fillStyle = '#ffffff';
         ctx!.fillRect(0, 0, targetWidth, targetHeight);
 
-        // Maintain aspect ratio
         const imgRatio = img.width / img.height;
         const targetRatio = targetWidth / targetHeight;
 
@@ -174,7 +164,7 @@ export class AddNewProduct2Component implements OnInit {
             };
             previewReader.readAsDataURL(croppedFile);
           }
-        }, 'image/jpeg', 0.9); // 90% quality
+        }, 'image/jpeg', 0.9);
       };
     };
 
@@ -202,10 +192,8 @@ export class AddNewProduct2Component implements OnInit {
   }
 
   toggleCategory(id: number, checked: boolean) {
-    if (checked) {
-      if (!this.product.categories.includes(id)) {
-        this.product.categories.push(id);
-      }
+    if (checked && !this.product.categories.includes(id)) {
+      this.product.categories.push(id);
     } else {
       this.product.categories = this.product.categories.filter(catId => catId !== id);
     }
@@ -271,24 +259,22 @@ export class AddNewProduct2Component implements OnInit {
     this.isLoading = true;
 
     const payload: any = {
-      name: this.product.name,
+      name: this.product.name || 'Untitled',
       type: 'variable',
-      status: this.product.status,
-      description: this.product.description,
-      short_description: `${this.product.brand} - ${this.product.color} - Sizes: ${this.product.sizes.map(s => s.size).join(', ')}`,
+      status: this.product.status || 'publish',
+      description: this.product.description || '',
+      short_description: `${this.product.brand || 'N/A'} - ${this.product.color || 'N/A'} - Sizes: ${this.product.sizes.map(s => s.size).join(', ')}`,
       tags: this.product.tags.map(tag => ({ name: tag.trim() })),
       categories: this.product.categories.map(id => ({ id })),
-      attributes: [
-        {
-          name: 'Size',
-          variation: true,
-          visible: true,
-          options: this.product.sizes.map(s => s.size)
-        }
-      ],
+      attributes: [{
+        name: 'Size',
+        variation: true,
+        visible: true,
+        options: this.product.sizes.map(s => s.size)
+      }],
       meta_data: [
-        { key: 'color', value: this.product.color },
-        { key: 'brand', value: this.product.brand }
+        { key: 'color', value: this.product.color || 'N/A' },
+        { key: 'brand', value: this.product.brand || 'N/A' }
       ]
     };
 
@@ -297,32 +283,48 @@ export class AddNewProduct2Component implements OnInit {
     }
 
     try {
-      if (this.isEditMode && this.productId) {
-        await this.wpService.updateProduct(Number(this.productId), payload).toPromise();
-        alert('✅ Product updated!');
-      } else {
-        const createdProduct = await this.wpService.addProduct(payload).toPromise();
-        const productId = createdProduct.id;
+      const productId = this.isEditMode && this.productId
+        ? Number(this.productId)
+        : (await this.wpService.addProduct(payload).toPromise()).id;
 
-        const variationPromises = this.product.sizes.map(s => this.wpService.createVariation(productId, {
+      if (this.isEditMode && this.productId) {
+        await this.wpService.updateProduct(productId, payload).toPromise();
+        console.log('✅ Product updated.');
+      } else {
+        console.log('✅ Product created.');
+      }
+
+      const variationPromises = this.product.sizes.map(async (s) => {
+        const variationData = {
           regular_price: s.price.toString(),
           stock_quantity: s.stock,
           manage_stock: true,
           status: 'publish',
-          attributes: [
-            {
-              name: 'Size',
-              option: s.size
-            }
-          ]
-        }).toPromise());
+          attributes: [{ name: 'Size', option: s.size }]
+        };
 
-        await Promise.all(variationPromises);
-        alert('✅ Product and variations added!');
-      }
-    } catch (err) {
+        try {
+          if (s.variation_id) {
+            await this.wpService.updateVariation(productId, s.variation_id, variationData).toPromise();
+            console.log(`🔁 Updated variation for size: ${s.size}`);
+          } else {
+            await this.wpService.createVariation(productId, variationData).toPromise();
+            console.log(`➕ Created variation for size: ${s.size}`);
+          }
+        } catch (variationError) {
+          console.error(`❌ Failed variation for size ${s.size}:`, variationError);
+        }
+      });
+
+      await Promise.all(variationPromises);
+
+      alert('✅ Product and variations saved!');
+    } catch (err: any) {
       console.error('❌ Failed to publish product:', err);
-      alert('❌ Product publish failed.');
+      if (err?.error) {
+        console.error('💥 WooCommerce API error:', err.error);
+      }
+      alert('❌ Product publish failed. Check console for error.');
     } finally {
       this.isLoading = false;
     }
