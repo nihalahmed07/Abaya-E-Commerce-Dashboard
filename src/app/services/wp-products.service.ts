@@ -8,7 +8,13 @@ export class WpProductsService {
   private consumerKey = 'ck_a5d1866cd08f77c20b601dd09746f0f00c3b6878';
   private consumerSecret = 'cs_729c552b1298055023ea6985f4120d5619ae1c0a';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
+
+  private authParams(): HttpParams {
+    return new HttpParams()
+      .set('consumer_key', this.consumerKey)
+      .set('consumer_secret', this.consumerSecret);
+  }
 
   // ✅ Add Product
   addProduct(data: any): Observable<any> {
@@ -22,6 +28,8 @@ export class WpProductsService {
       .set('per_page', params.per_page || '10')
       .set('page', params.page || '1');
 
+
+
     if (params.search) httpParams = httpParams.set('search', params.search);
     if (params.status && params.status !== 'all') httpParams = httpParams.set('status', params.status);
     if (params.stock_status && params.stock_status !== 'all') httpParams = httpParams.set('stock_status', params.stock_status);
@@ -29,6 +37,15 @@ export class WpProductsService {
 
     return this.http.get(this.baseUrl, { params: httpParams, observe: 'response' });
   }
+
+  getProductVariations(productId: number): Observable<any[]> {
+  const url = `${this.baseUrl}/${productId}/variations`;
+  return this.http.get<any[]>(url, {
+    params: this.authParams()
+  });
+}
+
+
 
   // ✅ Get Single Product
   getProduct(id: number): Observable<any> {
@@ -92,10 +109,7 @@ export class WpProductsService {
     );
   }
 
-  // ✅ Utility: Authentication Params
-  private authParams(): HttpParams {
-    return new HttpParams()
-      .set('consumer_key', this.consumerKey)
-      .set('consumer_secret', this.consumerSecret);
-  }
+  
+  
+
 }

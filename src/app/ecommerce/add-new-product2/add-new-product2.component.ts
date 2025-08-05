@@ -63,38 +63,57 @@ export class AddNewProduct2Component implements OnInit {
   }
 
   loadProduct(id: number) {
-    this.wpService.getProduct(id).subscribe({
-      next: (res) => {
-        this.product = {
-          name: res.name || '',
-          sku: res.sku || '',
-          color: this.getMetaValue(res.meta_data, 'color'),
-          brand: this.getMetaValue(res.meta_data, 'brand'),
-          description: res.description || '',
-          status: res.status || 'publish',
-          tags: [],
-          categories: res.categories?.map((cat: any) => cat.id) || [],
-          image: res.images?.[0] ? { id: res.images[0].id, url: res.images[0].src } : null,
-          sizes: []
-        };
+  this.wpService.getProduct(id).subscribe({
+    next: (res) => {
+      this.product = {
+        name: res.name || '',
+        sku: res.sku || '',
+        color: this.getMetaValue(res.meta_data, 'color'),
+        brand: this.getMetaValue(res.meta_data, 'brand'),
+        description: res.description || '',
+        status: res.status || 'publish',
+        tags: [],
+        categories: res.categories?.map((cat: any) => cat.id) || [],
+        image: res.images?.[0] ? { id: res.images[0].id, url: res.images[0].src } : null,
+        sizes: []
+      };
 
-        this.imagePreview = this.product.image?.url || '';
+      this.imagePreview = this.product.image?.url || '';
 
-        const tagIds = res.tags?.map(tag => tag.id) || [];
-        if (tagIds.length > 0) {
-          this.wpService.getTagsByIds(tagIds).subscribe({
-            next: (tags: any[]) => {
-              this.product.tags = tags.map(tag => tag.name);
-            },
-            error: (err) => console.error('Failed to load tags:', err)
-          });
-        }
-      },
-      error: (err) => {
-        console.error('❌ Failed to load product:', err);
+      const tagIds = res.tags?.map(tag => tag.id) || [];
+      if (tagIds.length > 0) {
+        this.wpService.getTagsByIds(tagIds).subscribe({
+          next: (tags: any[]) => {
+            this.product.tags = tags.map(tag => tag.name);
+          },
+          error: (err) => console.error('Failed to load tags:', err)
+        });
       }
-    });
-  }
+
+      // ✅ Load variations (sizes, stock, price)
+      this.wpService.getProductVariations(id).subscribe({
+        next: (variations: any[]) => {
+          this.product.sizes = variations.map((v: any) => {
+            const sizeAttr = v.attributes.find((a: any) => a.name.toLowerCase() === 'size');
+            return {
+              size: sizeAttr?.option || '',
+              stock: v.stock_quantity || 0,
+              price: parseFloat(v.regular_price || '0')
+            };
+          });
+        },
+        error: (err) => {
+          console.error('❌ Failed to load variations:', err);
+        }
+      });
+
+    },
+    error: (err) => {
+      console.error('❌ Failed to load product:', err);
+    }
+  });
+}
+
 
   getMetaValue(metaData: any[], key: string): string {
     if (!Array.isArray(metaData)) return '';
