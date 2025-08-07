@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { WpProductsService } from 'src/app/services/wp-products.service';
 import { CategoryService } from 'src/app/services/categories.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-add-new-product2',
@@ -14,15 +15,16 @@ export class AddNewProduct2Component implements OnInit {
 
   productId: string | null = null;
   isEditMode = false;
-  imageFile: File | null = null;
   isLoading = false;
   categoriesList: any[] = [];
 
   newTag = '';
-  imagePreview = '';
   customSize = '';
 
   predefinedSizes: string[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+
+  imageFiles: File[] = [];
+  imagePreviews: { url: string, index: number }[] = [];
 
   product: any = {
     name: '',
@@ -31,10 +33,10 @@ export class AddNewProduct2Component implements OnInit {
     brand: '',
     description: '',
     status: 'publish',
-    tags: [] as string[],
-    categories: [] as number[],
-    sizes: [] as { size: string; stock: number; price: number; variation_id?: number }[],
-    image: null
+    tags: [],
+    categories: [],
+    sizes: [],
+    images: []
   };
 
   constructor(
@@ -42,21 +44,21 @@ export class AddNewProduct2Component implements OnInit {
     private wpService: WpProductsService,
     private http: HttpClient,
     private categoryService: CategoryService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.fetchCategories();
     this.productId = this.route.snapshot.paramMap.get('id');
     if (this.productId) {
       this.isEditMode = true;
-      this.loadProduct(Number(this.productId));
+      this.loadProduct(+this.productId);
     }
   }
 
-  fetchCategories(): void {
+  fetchCategories() {
     this.categoryService.getCategories().subscribe({
       next: (data) => this.categoriesList = data,
-      error: (err) => console.error('❌ Failed to fetch categories:', err)
+      error: (err) => console.error('❌ Categories fetch failed', err)
     });
   }
 
@@ -72,25 +74,27 @@ export class AddNewProduct2Component implements OnInit {
           status: res.status || 'publish',
           tags: [],
           categories: res.categories?.map((cat: any) => cat.id) || [],
-          image: res.images?.[0] ? { id: res.images[0].id, url: res.images[0].src } : null,
-          sizes: []
+          sizes: [],
+          images: res.images?.map((img: any) => ({ id: img.id, url: img.src })) || []
         };
 
-        this.imagePreview = this.product.image?.url || '';
+        this.imagePreviews = this.product.images.map((img, i) => ({
+          url: img.url!,
+          index: i
+        }));
 
-        const tagIds = res.tags?.map(tag => tag.id) || [];
+        const tagIds = res.tags?.map((tag: any) => tag.id) || [];
         if (tagIds.length > 0) {
           this.wpService.getTagsByIds(tagIds).subscribe({
             next: (tags: any[]) => {
               this.product.tags = tags.map(tag => tag.name);
-            },
-            error: (err) => console.error('❌ Failed to load tags:', err)
+            }
           });
         }
 
         this.wpService.getProductVariations(id).subscribe({
-          next: (variations: any[]) => {
-            this.product.sizes = variations.map((v: any) => {
+          next: (variations) => {
+            this.product.sizes = variations.map(v => {
               const sizeAttr = v.attributes.find((a: any) => a.name.toLowerCase() === 'size');
               return {
                 variation_id: v.id,
@@ -99,90 +103,53 @@ export class AddNewProduct2Component implements OnInit {
                 price: parseFloat(v.regular_price || '0')
               };
             });
-          },
-          error: (err) => console.error('❌ Failed to load variations:', err)
+          }
         });
-      },
-      error: (err) => console.error('❌ Failed to load product:', err)
+      }
     });
   }
 
-  getMetaValue(metaData: any[], key: string): string {
-    if (!Array.isArray(metaData)) return '';
-    const found = metaData.find(meta => meta.key.toLowerCase() === key.toLowerCase());
-    return found?.value ?? '';
+  getMetaValue(meta: any[], key: string): string {
+    const found = meta.find(m => m.key.toLowerCase() === key.toLowerCase());
+    return found?.value || '';
   }
 
-  handleImageUpload(event: any) {
-    const file = event.target.files[0];
-    if (!file) return;
+  onImageChange(event: any) {
+  const files = Array.from(event.target.files) as File[];
 
+  const startingIndex = this.imageFiles.length;
+
+  files.forEach((file, i) => {
     const reader = new FileReader();
+
     reader.onload = (e: any) => {
-      const img = new Image();
-      img.src = e.target.result;
-
-      img.onload = () => {
-        const targetWidth = 433;
-        const targetHeight = 577;
-
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = targetWidth;
-        canvas.height = targetHeight;
-
-        ctx!.fillStyle = '#ffffff';
-        ctx!.fillRect(0, 0, targetWidth, targetHeight);
-
-        const imgRatio = img.width / img.height;
-        const targetRatio = targetWidth / targetHeight;
-
-        let drawWidth = targetWidth;
-        let drawHeight = targetHeight;
-
-        if (imgRatio > targetRatio) {
-          drawWidth = targetHeight * imgRatio;
-          drawHeight = targetHeight;
-        } else {
-          drawWidth = targetWidth;
-          drawHeight = targetWidth / imgRatio;
-        }
-
-        const offsetX = (targetWidth - drawWidth) / 2;
-        const offsetY = (targetHeight - drawHeight) / 2;
-
-        ctx?.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
-
-        canvas.toBlob((blob) => {
-          if (blob) {
-            const croppedFile = new File([blob], file.name, { type: 'image/jpeg' });
-            this.imageFile = croppedFile;
-
-            const previewReader = new FileReader();
-            previewReader.onload = (pe: any) => {
-              this.imagePreview = pe.target.result;
-            };
-            previewReader.readAsDataURL(croppedFile);
-          }
-        }, 'image/jpeg', 0.9);
-      };
+      this.imagePreviews.push({
+        url: e.target.result,
+        index: startingIndex + i
+      });
     };
 
+    this.imageFiles.push(file);
     reader.readAsDataURL(file);
-  }
+  });
+}
 
-  removeImage() {
-    this.imagePreview = '';
-    this.imageFile = null;
-    if (this.fileInput) {
-      this.fileInput.nativeElement.value = '';
-    }
-  }
+ removeImage(index: number) {
+  this.imagePreviews = this.imagePreviews.filter(img => img.index !== index);
+  this.imageFiles.splice(index, 1);
+
+  // Re-index after removal
+  this.imagePreviews = this.imagePreviews.map((img, i) => ({
+    ...img,
+    index: i
+  }));
+}
+
 
   addTag() {
-    const trimmedTag = this.newTag.trim();
-    if (trimmedTag && !this.product.tags.includes(trimmedTag)) {
-      this.product.tags.push(trimmedTag);
+    const tag = this.newTag.trim();
+    if (tag && !this.product.tags.includes(tag)) {
+      this.product.tags.push(tag);
     }
     this.newTag = '';
   }
@@ -199,58 +166,52 @@ export class AddNewProduct2Component implements OnInit {
     }
   }
 
-  isSizeAdded(size: string): boolean {
-    return this.product.sizes.some(s => s.size.trim().toUpperCase() === size.trim().toUpperCase());
+  removeCategory(id: number) {
+    this.product.categories = this.product.categories.filter(catId => catId !== id);
   }
 
-  addSize(size: string): void {
-    const normalized = size.trim().toUpperCase();
-    if (!this.isSizeAdded(normalized)) {
-      this.product.sizes.push({ size: normalized, stock: 0, price: 0 });
+  isSizeAdded(size: string) {
+    return this.product.sizes.some(s => s.size.toUpperCase() === size.toUpperCase());
+  }
+
+  addSize(size: string) {
+    const s = size.trim().toUpperCase();
+    if (!this.isSizeAdded(s)) {
+      this.product.sizes.push({ size: s, stock: 0, price: 0 });
     }
   }
 
-  addCustomSize(): void {
-    const trimmed = this.customSize.trim().toUpperCase();
-    if (trimmed && !this.isSizeAdded(trimmed)) {
-      this.product.sizes.push({ size: trimmed, stock: 0, price: 0 });
-      this.customSize = '';
+  addCustomSize() {
+    const s = this.customSize.trim().toUpperCase();
+    if (s && !this.isSizeAdded(s)) {
+      this.product.sizes.push({ size: s, stock: 0, price: 0 });
     }
+    this.customSize = '';
   }
 
-  removeSize(index: number): void {
-    this.product.sizes.splice(index, 1);
+  removeSize(i: number) {
+    this.product.sizes.splice(i, 1);
   }
 
-  updateStock(index: number, stock: number) {
-    this.product.sizes[index].stock = stock;
-  }
-
-  updatePrice(index: number, price: number) {
-    this.product.sizes[index].price = price;
-  }
-
-  async uploadImageAndPublish() {
-    if (!this.imageFile) {
+  uploadImageAndPublish() {
+    if (this.imageFiles.length === 0) {
       this.publishProduct();
       return;
     }
 
-    const formData = new FormData();
-    formData.append('image', this.imageFile);
+    const uploads = this.imageFiles.map(file =>
+      this.wpService.uploadImageCustom(file)
+    );
 
-    this.http.post<any>('https://cybercloudapp.com/wp-json/custom/v1/upload-image', formData).subscribe({
-      next: (res) => {
-        if (res.success && res.id) {
-          this.product.image = { id: res.id, url: res.url };
-          this.publishProduct();
-        } else {
-          alert('Image upload failed.');
-        }
+    forkJoin(uploads).subscribe({
+      next: (responses) => {
+        this.product.images = responses
+          .filter(res => res.success && res.id)
+          .map(res => ({ id: res.id, url: res.url }));
+        this.publishProduct();
       },
-      error: (err) => {
-        console.error('❌ Image upload error:', err);
-        alert('Image upload failed.');
+      error: () => {
+        alert('❌ Failed to upload images.');
       }
     });
   }
@@ -259,12 +220,12 @@ export class AddNewProduct2Component implements OnInit {
     this.isLoading = true;
 
     const payload: any = {
-      name: this.product.name || 'Untitled',
+      name: this.product.name,
       type: 'variable',
-      status: this.product.status || 'publish',
-      description: this.product.description || '',
-      short_description: `${this.product.brand || 'N/A'} - ${this.product.color || 'N/A'} - Sizes: ${this.product.sizes.map(s => s.size).join(', ')}`,
-      tags: this.product.tags.map(tag => ({ name: tag.trim() })),
+      status: this.product.status,
+      description: this.product.description,
+      short_description: `${this.product.brand} - ${this.product.color} - Sizes: ${this.product.sizes.map(s => s.size).join(', ')}`,
+      tags: this.product.tags.map(t => ({ name: t })),
       categories: this.product.categories.map(id => ({ id })),
       attributes: [{
         name: 'Size',
@@ -273,29 +234,23 @@ export class AddNewProduct2Component implements OnInit {
         options: this.product.sizes.map(s => s.size)
       }],
       meta_data: [
-        { key: 'color', value: this.product.color || 'N/A' },
-        { key: 'brand', value: this.product.brand || 'N/A' }
-      ]
+        { key: 'brand', value: this.product.brand },
+        { key: 'color', value: this.product.color }
+      ],
+      images: this.product.images.map(img => ({ id: img.id }))
     };
 
-    if (this.product.image?.id) {
-      payload.images = [{ id: this.product.image.id }];
-    }
-
     try {
-      const productId = this.isEditMode && this.productId
-        ? Number(this.productId)
+      const id = this.isEditMode
+        ? +this.productId!
         : (await this.wpService.addProduct(payload).toPromise()).id;
 
-      if (this.isEditMode && this.productId) {
-        await this.wpService.updateProduct(productId, payload).toPromise();
-        console.log('✅ Product updated.');
-      } else {
-        console.log('✅ Product created.');
+      if (this.isEditMode) {
+        await this.wpService.updateProduct(id, payload).toPromise();
       }
 
       const variationPromises = this.product.sizes.map(async (s) => {
-        const variationData = {
+        const data = {
           regular_price: s.price.toString(),
           stock_quantity: s.stock,
           manage_stock: true,
@@ -303,38 +258,20 @@ export class AddNewProduct2Component implements OnInit {
           attributes: [{ name: 'Size', option: s.size }]
         };
 
-        try {
-          if (s.variation_id) {
-            await this.wpService.updateVariation(productId, s.variation_id, variationData).toPromise();
-            console.log(`🔁 Updated variation for size: ${s.size}`);
-          } else {
-            await this.wpService.createVariation(productId, variationData).toPromise();
-            console.log(`➕ Created variation for size: ${s.size}`);
-          }
-        } catch (variationError) {
-          console.error(`❌ Failed variation for size ${s.size}:`, variationError);
+        if (s.variation_id) {
+          return this.wpService.updateVariation(id, s.variation_id, data).toPromise();
+        } else {
+          return this.wpService.createVariation(id, data).toPromise();
         }
       });
 
       await Promise.all(variationPromises);
-
       alert('✅ Product and variations saved!');
-    } catch (err: any) {
-      console.error('❌ Failed to publish product:', err);
-      if (err?.error) {
-        console.error('💥 WooCommerce API error:', err.error);
-      }
-      alert('❌ Product publish failed. Check console for error.');
+    } catch (err) {
+      console.error('❌ Product publish error', err);
+      alert('❌ Failed to publish product');
     } finally {
       this.isLoading = false;
     }
-  }
-
-  get tagsAsString(): string {
-    return this.product.tags.join(', ');
-  }
-
-  set tagsAsString(value: string) {
-    this.product.tags = value.split(',').map(tag => tag.trim());
   }
 }

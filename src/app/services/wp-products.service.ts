@@ -48,9 +48,7 @@ export class WpProductsService {
   // ✅ Get Product Variations
   getProductVariations(productId: number): Observable<any[]> {
     const url = `${this.baseUrl}/${productId}/variations`;
-    return this.http.get<any[]>(url, {
-      params: this.authParams()
-    });
+    return this.http.get<any[]>(url, { params: this.authParams() });
   }
 
   // ✅ Create Variation
@@ -92,27 +90,16 @@ export class WpProductsService {
     return this.http.get<any[]>(url, { params });
   }
 
-  // ✅ Get Tags by ID
+  // ✅ Get Tags by IDs
   getTagsByIds(ids: number[]): Observable<any[]> {
     const params = this.authParams().set('include', ids.join(','));
     return this.http.get<any[]>('https://cybercloudapp.com/wp-json/wc/v3/products/tags', { params });
   }
 
-  // ✅ Upload Product Image (Media)
-  uploadImage(file: File): Observable<any> {
+  // ✅ Upload Product Image (via custom secure endpoint)
+  uploadImageCustom(file: File): Observable<any> {
     const formData = new FormData();
-    formData.append('file', file);
-
-    // ⚠️ Make sure to store app password securely
-    const username = 'admin';
-    const appPassword = 'Abcd246@1'; // 🔐 Secure this
-    const base64Token = btoa(`${username}:${appPassword}`);
-
-    return this.http.post('https://cybercloudapp.com/wp-json/wp/v2/media', formData, {
-      headers: {
-        Authorization: `Basic ${base64Token}`,
-        'Content-Disposition': `attachment; filename="${file.name}"`,
-      },
-    });
+    formData.append('image', file);
+    return this.http.post('https://cybercloudapp.com/wp-json/custom/v1/upload-image', formData);
   }
 }
