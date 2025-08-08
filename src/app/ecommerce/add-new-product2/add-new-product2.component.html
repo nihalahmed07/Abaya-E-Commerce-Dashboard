@@ -107,27 +107,33 @@
                   </div>
 
                   <!-- Multi-Image Upload -->
-                  <div class="col-12">
-                    <label class="form-label">Product Images</label>
-                    <input #fileInput type="file" class="form-control" (change)="onImageChange($event)" accept="image/*" multiple />
+                  <!-- Product Images -->
+<div class="col-12">
+  <label class="form-label">Product Images</label>
+  <div class="input-group">
+  <input #fileInput type="file" class="form-control" (change)="onImageChange($event)" accept="image/*" multiple />
+  <button type="button" class="btn btn-outline-primary" (click)="triggerFileInput()"style="align-items-center">
+    <i class="bi bi-plus" style="font-size: 1.05rem;"></i>
+  </button>
+</div>
 
-                    <!-- Previews -->
-                    <div class="d-flex flex-wrap mt-3 gap-2">
-                      <div *ngFor="let img of imagePreviews" class="position-relative">
-                        <img [src]="img.url" width="120" height="120" class="rounded border shadow-sm" />
-                        <button type="button"
-                          class="btn btn-sm btn-danger position-absolute top-0 end-0 rounded-circle"
-                          style="width: 25px; height: 25px;"
-                          (click)="removeImage(img.index)">
-                          ×
-                        </button>
-                      </div>
-                    </div>
+  <!-- Previews -->
+  <div class="d-flex flex-wrap mt-3 gap-2">
+    <div *ngFor="let img of imagePreviews" class="position-relative">
+      <img [src]="img.url" width="120" height="120" class="rounded border shadow-sm" />
+      <button type="button"
+        class="btn btn-sm btn-danger position-absolute top-0 end-0 rounded-circle"
+        style="width: 25px; height: 25px;"
+        (click)="removeImage(img.index)">
+        ×
+      </button>
+    </div>
+  </div>
 
-                    <small class="text-muted d-block mt-2">
-                      You can upload multiple images. Recommended size: 433×577px.
-                    </small>
-                  </div>
+  <small class="text-muted d-block mt-2">
+    You can upload multiple images. Click the + to add more. First image will be used as main image.
+  </small>
+</div>
 
                   <!-- Description -->
                   <div class="col-12">

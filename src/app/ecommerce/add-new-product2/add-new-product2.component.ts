@@ -55,6 +55,10 @@ export class AddNewProduct2Component implements OnInit {
     }
   }
 
+  triggerFileInput() {
+    this.fileInput.nativeElement.click();
+  }
+
   fetchCategories() {
     this.categoryService.getCategories().subscribe({
       next: (data) => this.categoriesList = data,
@@ -115,36 +119,33 @@ export class AddNewProduct2Component implements OnInit {
   }
 
   onImageChange(event: any) {
-  const files = Array.from(event.target.files) as File[];
+    const files = Array.from(event.target.files) as File[];
+    const startingIndex = this.imageFiles.length;
 
-  const startingIndex = this.imageFiles.length;
+    files.forEach((file, i) => {
+      const reader = new FileReader();
 
-  files.forEach((file, i) => {
-    const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imagePreviews.push({
+          url: e.target.result,
+          index: startingIndex + i
+        });
+      };
 
-    reader.onload = (e: any) => {
-      this.imagePreviews.push({
-        url: e.target.result,
-        index: startingIndex + i
-      });
-    };
+      this.imageFiles.push(file);
+      reader.readAsDataURL(file);
+    });
+  }
 
-    this.imageFiles.push(file);
-    reader.readAsDataURL(file);
-  });
-}
+  removeImage(index: number) {
+    this.imagePreviews = this.imagePreviews.filter(img => img.index !== index);
+    this.imageFiles.splice(index, 1);
 
- removeImage(index: number) {
-  this.imagePreviews = this.imagePreviews.filter(img => img.index !== index);
-  this.imageFiles.splice(index, 1);
-
-  // Re-index after removal
-  this.imagePreviews = this.imagePreviews.map((img, i) => ({
-    ...img,
-    index: i
-  }));
-}
-
+    this.imagePreviews = this.imagePreviews.map((img, i) => ({
+      ...img,
+      index: i
+    }));
+  }
 
   addTag() {
     const tag = this.newTag.trim();
